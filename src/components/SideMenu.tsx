@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -62,9 +63,21 @@ export default function SideMenu() {
           >
             Riley Carter
           </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            riley@email.com
-          </Typography>
+          <div>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              <Link to={"/home"}>Home</Link>
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              <Link to={"/products"}>Products</Link>
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              <Link to={"/posts"}>Posts</Link>
+            </Typography>
+          </div>
         </Box>
       </Stack>
     </Drawer>
