@@ -6,6 +6,7 @@ interface Post {
   id: string;
   title: string;
   views: number;
+  active: boolean;
 }
 
 const PostsGrid: React.FC = () => {
@@ -13,6 +14,7 @@ const PostsGrid: React.FC = () => {
     { field: "id" },
     { field: "title" },
     { field: "views" },
+    { field: "active" },
   ];
 
   return (

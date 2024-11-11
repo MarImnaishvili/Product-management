@@ -21,7 +21,15 @@ const router = createBrowserRouter([
         element: <ProductsGrid />,
       },
       {
+        path: "/products/:productLine",
+        element: <ProductsGrid />,
+      },
+      {
         path: "/posts",
+        element: <PostsGrid />,
+      },
+      {
+        path: "/posts/:postsStat",
         element: <PostsGrid />,
       },
     ],

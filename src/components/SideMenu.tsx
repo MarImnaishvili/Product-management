@@ -5,9 +5,10 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const Drawer = styled(MuiDrawer)({
   width: drawerWidth,
@@ -21,6 +22,28 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu() {
+  const [selectProductLine, setSelectProductLine] = useState<
+    string | undefined
+  >(undefined);
+  const [selectPostLine, setSelectPostLine] = useState<string | undefined>(
+    undefined
+  );
+  const navigate = useNavigate();
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectProductLine(value);
+    // Example: Navigate to the selected product line's page
+    navigate(`/products/${value.toLowerCase().replace(/\s+/g, "-")}`);
+  };
+
+  const handleSelectChangePost = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setSelectPostLine(value);
+    // Example: Navigate to the selected product line's page
+    navigate(`/posts/${value.toLowerCase().replace(/\s+/g, "-")}`);
+  };
+
   return (
     <Drawer
       variant="permanent"
@@ -71,11 +94,52 @@ export default function SideMenu() {
           <div>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               <Link to={"/products"}>Products</Link>
+              <Box>
+                <select
+                  value={selectProductLine}
+                  onChange={handleSelectChange}
+                  aria-label="Select product line"
+                  style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "4px 8px",
+                    marginLeft: "8px",
+                    fontSize: "14px",
+                  }}
+                >
+                  <option value="">Select Product Line</option>
+                  <option value="Classic Cars">Classic Cars</option>
+                  <option value="Motorcycles">Motorcycles</option>
+                  <option value="Trucks and Buses">rucks and Buses</option>
+                  <option value="Vintage Cars">Vintage Cars</option>
+                  <option value="Planes">Planes</option>
+                  <option value="Ships">Ships</option>
+                  <option value="trains">trains</option>
+                </select>
+              </Box>
             </Typography>
           </div>
           <div>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               <Link to={"/posts"}>Posts</Link>
+              <Box>
+                <select
+                  value={selectPostLine}
+                  onChange={handleSelectChangePost}
+                  aria-label="Select post line"
+                  style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "4px 8px",
+                    marginLeft: "8px",
+                    fontSize: "14px",
+                  }}
+                >
+                  <option value="">Select Post</option>
+                  <option value="active">Active</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </Box>
             </Typography>
           </div>
         </Box>

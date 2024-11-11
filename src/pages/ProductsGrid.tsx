@@ -31,7 +31,7 @@ const ProductsGrid: React.FC = () => {
 
   return (
     <DataGrid<Product>
-      fetchUrl="http://localhost:3001/products"
+      fetchUrl="http://localhost:3001/products/"
       columnDefs={columnDefs}
     />
   );

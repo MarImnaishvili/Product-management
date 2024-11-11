@@ -1213,8 +1213,126 @@
   ],
 
   "posts": [
-    { "id": "1", "title": "a title", "views": 100 },
-    { "id": "2", "title": "another title", "views": 200 }
+    {
+      "id": "1",
+      "title": "a title",
+      "views": 100,
+      "active": true
+    },
+    {
+      "id": "2",
+      "title": "another title",
+      "views": 200,
+      "active": true
+    },
+    {
+      "id": "3",
+      "title": "another title",
+      "views": 400,
+      "active": false
+    },
+    {
+      "id": "4",
+      "title": "another title",
+      "views": 700,
+      "active": true
+    },
+    {
+      "id": "5",
+      "title": "another title",
+      "views": 300,
+      "active": true
+    },
+    {
+      "id": "6",
+      "title": "another title",
+      "views": 800,
+      "active": true
+    },
+    {
+      "id": "7",
+      "title": "another title",
+      "views": 700,
+      "active": false
+    },
+    {
+      "id": "8",
+      "title": "another title",
+      "views": 500,
+      "active": true
+    },
+    {
+      "id": "9",
+      "title": "another title",
+      "views": 150,
+      "active": true
+    },
+    {
+      "id": "10",
+      "title": "another title",
+      "views": 250,
+      "active": true
+    },
+    {
+      "id": "11",
+      "title": "another title",
+      "views": 750,
+      "active": true
+    },
+    {
+      "id": "12",
+      "title": "another title",
+      "views": 900,
+      "active": true
+    },
+    {
+      "id": "13",
+      "title": "another title",
+      "views": 1200,
+      "active": true
+    },
+    {
+      "id": "14",
+      "title": "another title",
+      "views": 500,
+      "active": false
+    },
+    {
+      "id": "15",
+      "title": "another title",
+      "views": 300,
+      "active": true
+    },
+    {
+      "id": "16",
+      "title": "another title",
+      "views": 100,
+      "active": false
+    },
+    {
+      "id": "17",
+      "title": "another title",
+      "views": 245,
+      "active": true
+    },
+    {
+      "id": "18",
+      "title": "another title",
+      "views": 670,
+      "active": false
+    },
+    {
+      "id": "19",
+      "title": "another title",
+      "views": 20,
+      "active": true
+    },
+    {
+      "id": "20",
+      "title": "another title",
+      "views": 40,
+      "active": false
+    }
   ],
   "comments": [
     { "id": "1", "text": "a comment about post 1", "postId": "1" },
