@@ -1,54 +1,54 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { Product } from "../services/ProductService";
-import { Post } from "../services/PostService";
+import { DataGridProps } from "../types";
 
-interface DataGridProps<T> {
-  columnDefs: ColDef<T>[];
-  filteredData: T[]; // Corrected to T[] (generic type)
-  error: string | null;
-  loading: boolean;
-}
+const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
+  const {
+    columnDefs,
+    filteredData,
+    error,
+    loading,
+    rowHeight = 40,
+    gridWidth = "100%",
+    pagination = true,
+    paginationPageSize = 15,
+    defaultColDef = { sortable: true, filter: true },
+    paginationPageSizeSelector = [15, 30, 60, 120],
+    headerHeight = 40,
+  } = gridOptions;
 
-const DataGrid = <T extends Product | Post>({
-  columnDefs,
-  filteredData,
-  error,
-  loading,
-}: DataGridProps<T>) => {
-  const [rowData, setRowData] = useState<T[]>([]);
+  // Memoized default column definitions, overriding as necessary
+  const memoizedColDef = useMemo(
+    () => ({
+      ...defaultColDef,
+      flex: 1, // This will ensure columns take up available space
+    }),
+    [defaultColDef]
+  );
 
   useEffect(() => {
-    setRowData(filteredData);
-  }, [filteredData]); // only run when filteredData changes
-
-  const defaultColDef = useMemo(
-    () => ({
-      flex: 1,
-      filter: true,
-    }),
-    []
-  );
+    // No need to manage rowData state manually since it is already passed in gridOptions.
+    // AG-Grid will handle this for you via the 'filteredData' prop.
+  }, [filteredData]);
 
   return (
     <div
       className="ag-theme-quartz-dark"
-      style={{ height: "100vh", width: "100%" }}
+      style={{ height: "100vh", width: gridWidth }}
     >
       {loading && <p>Loading...</p>}
       {error && <p>Error fetching data: {error}</p>}
       <AgGridReact
-        rowData={rowData}
         columnDefs={columnDefs}
-        pagination={true}
-        paginationPageSize={15}
-        domLayout="autoHeight"
-        paginationPageSizeSelector={[15, 30, 60, 120]}
-        headerHeight={40}
-        defaultColDef={defaultColDef}
+        rowData={filteredData} // Directly pass filteredData as rowData
+        pagination={pagination}
+        paginationPageSize={paginationPageSize}
+        paginationPageSizeSelector={paginationPageSizeSelector}
+        headerHeight={headerHeight}
+        rowHeight={rowHeight}
+        defaultColDef={memoizedColDef} // Use memoized default column definition
       />
     </div>
   );

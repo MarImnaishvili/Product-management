@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ColDef } from "ag-grid-community";
-import { Post, PostService } from "../services/PostService";
+import { PostService } from "../services/PostService";
 import DataGrid from "../components/DataGrid";
+import { GridOptions, Post } from "../types";
 
 const PostComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -41,6 +42,7 @@ const PostComponent: React.FC = () => {
     ? posts
     : PostService.filterPosts(posts, normalizedUrl);
 
+  // Define columnDefs for the AG-Grid
   const columnDefs: ColDef<Post>[] = [
     { field: "id" },
     { field: "title" },
@@ -51,17 +53,31 @@ const PostComponent: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  // Define GridOptions for DataGrid
+  const productGridOptions: GridOptions<Post> = {
+    columnDefs,
+    filteredData,
+    error,
+    loading,
+    rowHeight: 35, // Customize row height
+    gridWidth: "100%", // Customize grid width
+    pagination: true, // Enable pagination
+    paginationPageSize: 15, // Custom page size for Products
+    defaultColDef: {
+      sortable: true,
+      filter: true,
+      resizable: true, // Allow resizing columns
+    },
+    paginationPageSizeSelector: [15, 30, 60, 120], // Pagination options
+    headerHeight: 40, // Customize header height
+  };
+
   return (
     <div
       className="ag-theme-quartz-dark"
       style={{ height: "100vh", width: "100%" }}
     >
-      <DataGrid
-        columnDefs={columnDefs}
-        filteredData={filteredData}
-        loading={loading}
-        error={error}
-      />
+      <DataGrid gridOptions={productGridOptions} />
     </div>
   );
 };

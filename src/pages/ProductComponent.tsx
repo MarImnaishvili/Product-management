@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ColDef } from "ag-grid-community";
 import DataGrid from "../components/DataGrid";
-import { Product, ProductService } from "../services/ProductService";
+import { ProductService } from "../services/ProductService";
+import { GridOptions, Product } from "../types";
 
 const ProductComponent: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -53,17 +54,30 @@ const ProductComponent: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  const productGridOptions: GridOptions<Product> = {
+    columnDefs,
+    filteredData,
+    error,
+    loading,
+    rowHeight: 35, // Customize row height
+    gridWidth: "100%", // Customize grid width
+    pagination: true, // Enable pagination
+    paginationPageSize: 15, // Custom page size for Products
+    defaultColDef: {
+      sortable: true,
+      filter: true,
+      resizable: true, // Allow resizing columns
+    },
+    paginationPageSizeSelector: [15, 30, 60, 120], // Pagination options
+    headerHeight: 40, // Customize header height
+  };
+
   return (
     <div
       className="ag-theme-quartz-dark"
       style={{ height: "100vh", width: "100%" }}
     >
-      <DataGrid
-        columnDefs={columnDefs}
-        filteredData={filteredData}
-        loading={loading}
-        error={error}
-      />
+      <DataGrid gridOptions={productGridOptions} />
     </div>
   );
 };
