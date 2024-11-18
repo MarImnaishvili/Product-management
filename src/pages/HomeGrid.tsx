@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
+// import { logger } from "react-native-logs";
 
 const HomeGrid: React.FC = () => {
   // Define empty column definitions

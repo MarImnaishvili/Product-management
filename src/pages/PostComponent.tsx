@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Post, ProductService } from "../services/ProductService";
 import { useLocation } from "react-router-dom";
-import DataGridCopy from "../components/DataGridCopy";
 import { ColDef } from "ag-grid-community";
+import { Post, PostService } from "../services/PostService";
+import DataGrid from "../components/DataGrid";
 
 const PostComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -17,7 +17,7 @@ const PostComponent: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const fetchedPosts = await ProductService.getAllPosts();
+        const fetchedPosts = await PostService.getAllPosts();
         setPosts(fetchedPosts);
         setLoading(false);
       } catch (err) {
@@ -39,7 +39,7 @@ const PostComponent: React.FC = () => {
   // Filter posts using ProductService only if we're not on the /posts page
   const filteredData = isPostsPage
     ? posts
-    : ProductService.filterPosts(posts, normalizedUrl);
+    : PostService.filterPosts(posts, normalizedUrl);
 
   const columnDefs: ColDef<Post>[] = [
     { field: "id" },
@@ -56,7 +56,7 @@ const PostComponent: React.FC = () => {
       className="ag-theme-quartz-dark"
       style={{ height: "100vh", width: "100%" }}
     >
-      <DataGridCopy
+      <DataGrid
         columnDefs={columnDefs}
         filteredData={filteredData}
         loading={loading}

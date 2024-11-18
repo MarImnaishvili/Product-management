@@ -21,7 +21,6 @@ export default function NavbarBreadcrumbs() {
     location.pathname.slice(1).charAt(0).toUpperCase() +
     location.pathname.slice(2).replace(/\//g, " > ").replace(/-/g, " ");
 
-  console.log(locationPage);
   return (
     <StyledBreadcrumbs
       aria-label="breadcrumb"

@@ -3,7 +3,8 @@ import { AgGridReact } from "ag-grid-react";
 import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { Product, Post } from "../services/ProductService";
+import { Product } from "../services/ProductService";
+import { Post } from "../services/PostService";
 
 interface DataGridProps<T> {
   columnDefs: ColDef<T>[];
@@ -12,7 +13,7 @@ interface DataGridProps<T> {
   loading: boolean;
 }
 
-const DataGridCopy = <T extends Product | Post>({
+const DataGrid = <T extends Product | Post>({
   columnDefs,
   filteredData,
   error,
@@ -53,4 +54,4 @@ const DataGridCopy = <T extends Product | Post>({
   );
 };
 
-export default DataGridCopy;
+export default DataGrid;

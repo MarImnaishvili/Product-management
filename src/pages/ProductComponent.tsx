@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Product, ProductService } from "../services/ProductService";
 import { useLocation } from "react-router-dom";
-import DataGridCopy from "../components/DataGridCopy";
 import { ColDef } from "ag-grid-community";
+import DataGrid from "../components/DataGrid";
+import { Product, ProductService } from "../services/ProductService";
 
 const ProductComponent: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -12,9 +12,6 @@ const ProductComponent: React.FC = () => {
   const location = useLocation();
   const productLineFromUrl = location.pathname.split("/")[2];
   const normalizedUrl = productLineFromUrl?.trim().replace(/-/g, " ");
-
-  console.log(productLineFromUrl);
-  console.log(normalizedUrl);
 
   // Fetch products when the component mounts
   useEffect(() => {
@@ -35,12 +32,13 @@ const ProductComponent: React.FC = () => {
   }, []);
 
   // Filter products using ProductService
-  const filteredData = ProductService.filterProducts(
+  const filteredData = ProductService.getProductsByProductLine(
     products,
     normalizedUrl || ""
   );
 
   const columnDefs: ColDef<Product>[] = [
+    { field: "productId" },
     { field: "productCode" },
     { field: "productName" },
     { field: "productLine" },
@@ -50,7 +48,6 @@ const ProductComponent: React.FC = () => {
     { field: "quantityInStock" },
     { field: "buyPrice" },
     { field: "MSRP" },
-    { field: "id" },
   ];
 
   if (loading) return <div>Loading...</div>;
@@ -61,7 +58,7 @@ const ProductComponent: React.FC = () => {
       className="ag-theme-quartz-dark"
       style={{ height: "100vh", width: "100%" }}
     >
-      <DataGridCopy
+      <DataGrid
         columnDefs={columnDefs}
         filteredData={filteredData}
         loading={loading}
