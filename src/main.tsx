@@ -3,8 +3,8 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Layout from "./components/Layout";
-import ProductsGrid from "./pages/ProductsGrid";
-import PostsGrid from "./pages/PostsGrid";
+import ProductComponent from "./pages/ProductComponentCopy";
+import PostComponent from "./pages/PostComponentCopy";
 import HomeGrid from "./pages/HomeGrid";
 
 const router = createBrowserRouter([
@@ -18,19 +18,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/products",
-        element: <ProductsGrid />,
+        element: <ProductComponent />,
       },
       {
         path: "/products/:productLine",
-        element: <ProductsGrid />,
+        element: <ProductComponent />,
       },
       {
         path: "/posts",
-        element: <PostsGrid />,
+        element: <PostComponent />,
       },
       {
         path: "/posts/:postsStat",
-        element: <PostsGrid />,
+        element: <PostComponent />,
       },
     ],
   },

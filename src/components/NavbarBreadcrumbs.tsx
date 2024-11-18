@@ -19,7 +19,7 @@ export default function NavbarBreadcrumbs() {
   const location = useLocation();
   const locationPage =
     location.pathname.slice(1).charAt(0).toUpperCase() +
-    location.pathname.slice(2);
+    location.pathname.slice(2).replace(/\//g, " > ").replace(/-/g, " ");
 
   console.log(locationPage);
   return (
@@ -30,7 +30,7 @@ export default function NavbarBreadcrumbs() {
       <Typography variant="body1">Dashboard</Typography>
       <Typography
         variant="body1"
-        sx={{ color: "text.primary", fontWeight: 600 }}
+        sx={{ color: "text.primary", fontWeight: 500 }}
       >
         {locationPage}
       </Typography>

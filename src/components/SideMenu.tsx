@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import Avatar from "@mui/material/Avatar";
+// import Avatar from "@mui/material/Avatar";
 import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -40,7 +40,6 @@ export default function SideMenu() {
   const handleSelectChangePost = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setSelectPostLine(value);
-    // Example: Navigate to the selected product line's page
     navigate(`/posts/${value.toLowerCase().replace(/\s+/g, "-")}`);
   };
 
@@ -73,27 +72,48 @@ export default function SideMenu() {
           borderColor: "divider",
         }}
       >
-        <Avatar
+        {/* <Avatar
           sizes="small"
           alt="Riley Carter"
           src="/static/images/avatar/7.jpg"
           sx={{ width: 36, height: 36 }}
-        />
+        /> */}
         <Box sx={{ mr: "auto" }}>
           <Typography
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: "16px" }}
+            pb={3}
           >
-            Riley Carter
+            Product Management
           </Typography>
           <div>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              <Link to={"/home"}>Home</Link>
+              <Link
+                to={"/home"}
+                style={{
+                  textDecoration: "none",
+                  padding: "4px 8px 4px 0",
+                  fontSize: "14px",
+                  color: "black",
+                }}
+              >
+                Home
+              </Link>
             </Typography>
           </div>
           <div>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              <Link to={"/products"}>Products</Link>
+              <Link
+                to={"/products"}
+                style={{
+                  textDecoration: "none",
+                  padding: "4px 8px 4px 0",
+                  fontSize: "14px",
+                  color: "black",
+                }}
+              >
+                Products
+              </Link>
               <Box>
                 <select
                   value={selectProductLine}
@@ -105,9 +125,10 @@ export default function SideMenu() {
                     padding: "4px 8px",
                     marginLeft: "8px",
                     fontSize: "14px",
+                    cursor: "pointer",
                   }}
                 >
-                  <option value="">Select Product Line</option>
+                  <option value="">All Product Line</option>
                   <option value="Classic Cars">Classic Cars</option>
                   <option value="Motorcycles">Motorcycles</option>
                   <option value="Trucks and Buses">rucks and Buses</option>
@@ -121,7 +142,18 @@ export default function SideMenu() {
           </div>
           <div>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              <Link to={"/posts"}>Posts</Link>
+              <Link
+                to={"/posts"}
+                style={{
+                  textDecoration: "none",
+                  padding: "4px 8px 4px 0",
+                  fontSize: "14px",
+                  color: "black",
+                  cursor: "pointer",
+                }}
+              >
+                Posts
+              </Link>
               <Box>
                 <select
                   value={selectPostLine}
@@ -135,7 +167,7 @@ export default function SideMenu() {
                     fontSize: "14px",
                   }}
                 >
-                  <option value="">Select Post</option>
+                  <option value="">All Post</option>
                   <option value="active">Active</option>
                   <option value="archived">Archived</option>
                 </select>
