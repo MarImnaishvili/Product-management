@@ -1,18 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { logger } from "react-native-logs";
-
-export interface Product {
-  productId: string;
-  productCode: string;
-  productName: string;
-  productLine: string;
-  productScale: string;
-  productVendor: string;
-  productDescription: string;
-  quantityInStock: number;
-  buyPrice: number;
-  MSRP: number;
-}
+import { Product } from "../types";
 
 const API_BASE_URL = "http://localhost:3001/";
 

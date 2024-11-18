@@ -1,12 +1,6 @@
 import axios, { AxiosResponse } from "axios";
+import { Post } from "../types";
 // import { logger } from "react-native-logs";
-
-export interface Post {
-  id: string;
-  title: string;
-  views: number;
-  active: boolean;
-}
 
 const API_BASE_URL = "http://localhost:3001/";
 

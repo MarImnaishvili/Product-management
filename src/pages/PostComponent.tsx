@@ -59,7 +59,7 @@ const PostComponent: React.FC = () => {
     filteredData,
     error,
     loading,
-    rowHeight: 35, // Customize row height
+    rowHeight: 45, // Customize row height
     gridWidth: "100%", // Customize grid width
     pagination: true, // Enable pagination
     paginationPageSize: 15, // Custom page size for Products
