@@ -1218,140 +1218,140 @@
       "title": "a title",
       "views": 100,
       "active": true,
-      "date": "2022/11/23"
+      "date": "11/23/2022"
     },
     {
       "id": "2",
       "title": "another title",
       "views": 200,
       "active": true,
-      "date": "2021/12/02"
+      "date": "12/02/2021"
     },
     {
       "id": "3",
       "title": "another title",
       "views": 400,
       "active": false,
-      "date": "2022/11/23"
+      "date": "11/23/2022"
     },
     {
       "id": "4",
       "title": "another title",
       "views": 700,
       "active": true,
-      "date": "2023/05/15"
+      "date": "05/15/2023"
     },
     {
       "id": "5",
       "title": "another title",
       "views": 300,
       "active": true,
-      "date": "2023/03/10"
+      "date": "03/10/2023"
     },
     {
       "id": "6",
       "title": "another title",
       "views": 800,
       "active": true,
-      "date": "2023/02/12"
+      "date": "02/12/2023"
     },
     {
       "id": "7",
       "title": "another title",
       "views": 700,
       "active": false,
-      "date": "2023/03/11"
+      "date": "03/11/2023"
     },
     {
       "id": "8",
       "title": "another title",
       "views": 500,
       "active": true,
-      "date": "2023/02/08"
+      "date": "02/08/2023"
     },
     {
       "id": "9",
       "title": "another title",
       "views": 150,
       "active": true,
-      "date": "2023/02/06"
+      "date": "02/06/2023"
     },
     {
       "id": "10",
       "title": "another title",
       "views": 250,
       "active": true,
-      "date": "2024/02/08"
+      "date": "02/08/2024"
     },
     {
       "id": "11",
       "title": "another title",
       "views": 750,
       "active": true,
-      "date": "2024/03/09"
+      "date": "03/09/2024"
     },
     {
       "id": "12",
       "title": "another title",
       "views": 900,
       "active": true,
-      "date": "2024/01/05"
+      "date": "01/05/2024"
     },
     {
       "id": "13",
       "title": "another title",
       "views": 1200,
       "active": true,
-      "date": "2024/03/09"
+      "date": "03/09/2024"
     },
     {
       "id": "14",
       "title": "another title",
       "views": 500,
       "active": false,
-      "date": "2024/09/22"
+      "date": "09/22/2024"
     },
     {
       "id": "15",
       "title": "another title",
       "views": 300,
       "active": true,
-      "date": "2024/06/12"
+      "date": "06/12/2024"
     },
     {
       "id": "16",
       "title": "another title",
       "views": 100,
       "active": false,
-      "date": "2024/04/08"
+      "date": "04/08/2024"
     },
     {
       "id": "17",
       "title": "another title",
       "views": 245,
       "active": true,
-      "date": "2024/08/07"
+      "date": "08/07/2024"
     },
     {
       "id": "18",
       "title": "another title",
       "views": 670,
       "active": false,
-      "date": "2024/11/08"
+      "date": "11/08/2024"
     },
     {
       "id": "19",
       "title": "another title",
       "views": 20,
       "active": true,
-      "date": "2024/05/09"
+      "date": "05/09/2024"
     },
     {
       "id": "20",
       "title": "another title",
       "views": 40,
       "active": false,
-      "date": "2024/01/19"
+      "date": "01/19/2024"
     }
   ],
   "comments": [

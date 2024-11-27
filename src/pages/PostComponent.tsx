@@ -61,9 +61,9 @@ const PostComponent: React.FC = () => {
             return 0;
           }
           const dateParts = cellValue.split("/");
-          const year = Number(dateParts[0]);
-          const month = Number(dateParts[1]);
-          const day = Number(dateParts[2]);
+          const month = Number(dateParts[0]);
+          const day = Number(dateParts[1]);
+          const year = Number(dateParts[2]);
           const cellDate: Date = new Date(year, month - 1, day); // Adjust for 0-based month
 
           const cellDateTimestamp = cellDate.getTime(); // Convert cellDate to timestamp (number)
