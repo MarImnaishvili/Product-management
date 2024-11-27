@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ColDef } from "ag-grid-community";
 import { PostService } from "../services/PostService";
 import DataGrid from "../components/DataGrid";
 import { GridOptions, Post } from "../types";
+import { PropsActionComponent } from "../components/PropsActionComponent";
 
 const PostComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -40,14 +41,42 @@ const PostComponent: React.FC = () => {
   // Filter posts using ProductService only if we're not on the /posts page
   const filteredData = isPostsPage
     ? posts
-    : PostService.filterPosts(posts, normalizedUrl);
+    : PostService.getPostsByStatus(posts, normalizedUrl);
 
   // Define columnDefs for the AG-Grid
   const columnDefs: ColDef<Post>[] = [
-    { field: "id" },
-    { field: "title" },
-    { field: "views" },
-    { field: "active" },
+    { field: "id", filter: "agTextColumnFilter", flex: 0.5 },
+    { field: "action", cellRenderer: memo(PropsActionComponent), flex: 1.2 },
+    { field: "title", filter: "agTextColumnFilter", flex: 1.2 },
+    { field: "views", filter: "agNumberColumnFilter" },
+    {
+      field: "active",
+    },
+    {
+      field: "date",
+      filter: "agDateColumnFilter",
+      filterParams: {
+        comparator: (dateFromFilter: number, cellValue: string | null) => {
+          if (cellValue == null) {
+            return 0;
+          }
+          const dateParts = cellValue.split("/");
+          const year = Number(dateParts[0]);
+          const month = Number(dateParts[1]);
+          const day = Number(dateParts[2]);
+          const cellDate: Date = new Date(year, month - 1, day); // Adjust for 0-based month
+
+          const cellDateTimestamp = cellDate.getTime(); // Convert cellDate to timestamp (number)
+
+          if (cellDateTimestamp < dateFromFilter) {
+            return -1;
+          } else if (cellDateTimestamp > dateFromFilter) {
+            return 1;
+          }
+          return 0;
+        },
+      },
+    },
   ];
 
   if (loading) return <div>Loading...</div>;
@@ -72,12 +101,27 @@ const PostComponent: React.FC = () => {
     headerHeight: 40, // Customize header height
   };
 
+  // Save updated post after editing in the modal
+  const handleSavePost = (updatedPost: Post) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => (post.id === updatedPost.id ? updatedPost : post))
+    );
+  };
+
   return (
     <div
       className="ag-theme-quartz-dark"
       style={{ height: "100vh", width: "100%" }}
     >
       <DataGrid gridOptions={productGridOptions} />
+      {/* Pass handleSavePost to PropsActionComponent */}
+      {posts.map((post) => (
+        <PropsActionComponent
+          key={post.id}
+          data={post}
+          onSave={handleSavePost}
+        />
+      ))}
     </div>
   );
 };

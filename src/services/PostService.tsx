@@ -15,7 +15,7 @@ export class PostService {
   }
 
   // Filter posts based on the active status
-  static filterPosts(posts: Post[], query: string): Post[] {
+  static getPostsByStatus(posts: Post[], query: string): Post[] {
     return posts.filter((post) => {
       // If the query is empty, return all posts
       if (query === "") return true;

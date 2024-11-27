@@ -2,9 +2,12 @@ import { ColDef } from "ag-grid-community";
 
 export interface Post {
   id: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: any;
   title: string;
   views: number;
   active: boolean;
+  date: string;
 }
 
 export interface Product {
@@ -39,3 +42,10 @@ export interface GridOptions<T> {
 export interface DataGridProps<T> {
   gridOptions: GridOptions<T>;
 }
+
+export interface IColDef {
+  flex?: number;
+  sortable?: boolean;
+  filter?: boolean;
+  editable?: boolean;
+} // was not case to use

@@ -14,16 +14,19 @@ const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
     gridWidth = "100%",
     pagination = true,
     paginationPageSize = 15,
-    defaultColDef = { sortable: true, filter: true },
     paginationPageSizeSelector = [15, 30, 60, 120],
     headerHeight = 40,
+    defaultColDef, // Now it's explicitly passed as a prop
   } = gridOptions;
 
   // Memoized default column definitions, overriding as necessary
   const memoizedColDef = useMemo(
     () => ({
       ...defaultColDef,
-      flex: 1, // This will ensure columns take up available space
+      flex: 1,
+      sortable: true,
+      filter: true,
+      editable: true, // This will ensure columns take up available space
     }),
     [defaultColDef]
   );
@@ -49,6 +52,7 @@ const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
         headerHeight={headerHeight}
         rowHeight={rowHeight}
         defaultColDef={memoizedColDef} // Use memoized default column definition
+        rowSelection="multiple" // Correct usage for multiple row selection
       />
     </div>
   );

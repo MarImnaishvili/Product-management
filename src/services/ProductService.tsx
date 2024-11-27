@@ -28,7 +28,11 @@ export class ProductService {
 
       return isProductLineMatch;
     });
-    log.info(`products fechted sucessfully with + ${result.length} products.`);
+    log.info(
+      `products fechted sucessfully with + ${result.length} products.${[
+        ...new Set(result.map((product) => product.productVendor)),
+      ]}`
+    );
     return result;
   }
 }

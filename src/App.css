@@ -1,7 +1,0 @@
-.frozen-row {
-  background-color: #e0e0e0; /* Light gray background */
-  font-weight: bold; /* Bold text */
-  position: sticky; /* Make it sticky */
-  top: 0; /* Align it to the top */
-  z-index: 1; /* Ensure it's above other rows */
-}
