@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { PropsModal } from "./PropsModal";
-import { Post } from "../types";
-import { DialogActions, IconButton } from "@mui/material";
+import { Post, PropsActionComponentProps } from "../types";
+import { DialogActions, IconButton, Tooltip } from "@mui/material";
 import { Visibility, Edit, CheckCircle, Cancel } from "@mui/icons-material";
-
-interface PropsActionComponentProps {
-  data: Post;
-  onSave: (updatedPost: Post) => void; // onSave is passed from PostComponent
-}
 
 export function PropsActionComponent({
   data,
@@ -19,52 +14,60 @@ export function PropsActionComponent({
     "view"
   );
 
-  const handleEdit = () => {
+  const openModal = (mode: "view" | "edit" | "toggleActive", data: Post) => {
     setModalData(data);
-    setModalMode("edit");
+    setModalMode(mode);
     setIsModalOpen(true);
   };
 
-  const handleView = () => {
-    setModalData(data);
-    setModalMode("view");
-    setIsModalOpen(true);
-  };
+  const handleEdit = () => openModal("edit", data);
+  const handleView = () => openModal("view", data);
+  const handleToggleActive = () =>
+    openModal("toggleActive", { ...data, active: !data.active });
 
-  const handleToggleActive = () => {
-    setModalData({ ...data, active: !data.active });
-    setModalMode("toggleActive");
-    setIsModalOpen(true);
+  const handleClick = () => {
+    console.log("Calling onSave from PropsActionComponent:", onSave);
+    onSave(data);
   };
 
   return (
     <>
       <DialogActions>
-        <IconButton onClick={handleView} color="primary">
-          <Visibility />
-        </IconButton>
-
-        <IconButton onClick={handleEdit} color="secondary">
-          <Edit />
-        </IconButton>
-
-        <IconButton
-          onClick={handleToggleActive}
-          color={data.active ? "default" : "success"}
-        >
-          {data.active ? <Cancel /> : <CheckCircle />}
-        </IconButton>
+        <button onClick={handleClick}>Save</button>;
+        <Tooltip title="View Details">
+          <IconButton
+            onClick={handleView}
+            color="primary"
+            aria-label="View details"
+          >
+            <Visibility />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Edit">
+          <IconButton onClick={handleEdit} color="secondary" aria-label="Edit">
+            <Edit />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={data.active ? "Deactivate" : "Activate"}>
+          <IconButton
+            onClick={handleToggleActive}
+            color={data.active ? "default" : "success"}
+            aria-label="Toggle active status"
+          >
+            {data.active ? <Cancel /> : <CheckCircle />}
+          </IconButton>
+        </Tooltip>
       </DialogActions>
 
       {isModalOpen && (
         <PropsModal
           open={isModalOpen}
           rowData={data}
-          onClose={() => setIsModalOpen(false)}
           modalData={modalData}
           setModalData={setModalData}
+          onSave={onSave}
+          onClose={() => setIsModalOpen(false)}
           mode={modalMode}
-          onSave={onSave} // Pass onSave to PropsModal
         />
       )}
     </>

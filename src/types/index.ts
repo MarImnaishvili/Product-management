@@ -49,3 +49,18 @@ export interface IColDef {
   filter?: boolean;
   editable?: boolean;
 } // was not case to use
+
+export interface PropsModalProps {
+  rowData: Post | null;
+  onClose: () => void;
+  open: boolean;
+  modalData: Post;
+  setModalData: React.Dispatch<React.SetStateAction<Post>>;
+  mode: "view" | "edit" | "toggleActive";
+  onSave: (updatedPost: Post) => void;
+}
+
+export interface PropsActionComponentProps {
+  data: Post;
+  onSave: (updatedPost: Post) => void; // onSave is passed from PostComponent
+}

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Post } from "../types";
+import { PropsModalProps } from "../types";
 import {
   Checkbox,
   Dialog,
@@ -8,69 +8,24 @@ import {
   DialogTitle,
   FormControlLabel,
   TextField,
-  Button, // Import Button for Save
+  Button,
 } from "@mui/material";
+import { parse, format, isValid } from "date-fns";
 
-interface PropsModalProps {
-  rowData: Post;
-  onClose: () => void;
-  open: boolean;
-  modalData: Post;
-  setModalData: React.Dispatch<React.SetStateAction<Post>>;
-  mode: "view" | "edit" | "toggleActive";
-  onSave: (updatedPost: Post) => void; // onSave prop for saving the post
-}
-
-// Convert MM/DD/YYYY string to YYYY-MM-DD format
+// Simplified date formatting function
 const formatDate = (date: string): string => {
-  // Check if the date is in the 'YYYY-MM-DD' format (ISO format)
-  if (date.includes("-")) {
-    const parsedDate = new Date(date);
+  // Try to parse the input date directly in 'yyyy-MM-dd' format
+  const parsedDate = isValid(parse(date, "yyyy-MM-dd", new Date()))
+    ? parse(date, "yyyy-MM-dd", new Date())
+    : parse(date, "MM/dd/yyyy", new Date());
 
-    // Check if the date is a valid date object
-    if (isNaN(parsedDate.getTime())) {
-      console.error("Invalid Date object:", parsedDate);
-      return ""; // Return empty string if the date is invalid
-    }
-
-    // If it's a valid date, return the date in 'YYYY-MM-DD' format
-    return parsedDate.toISOString().split("T")[0];
-  }
-
-  // Otherwise, assume the date is in 'MM/DD/YYYY' format
-  const dateParts = date.split("/");
-  if (dateParts.length !== 3) {
+  if (!parsedDate) {
     console.error("Invalid date format:", date);
-    return ""; // Return an empty string if the format is incorrect
+    return "";
   }
 
-  const [month, day, year] = dateParts.map(Number);
-
-  // Validate the individual parts
-  if (
-    isNaN(month) ||
-    isNaN(day) ||
-    isNaN(year) ||
-    month < 1 ||
-    month > 12 ||
-    day < 1 ||
-    day > 31
-  ) {
-    console.error("Invalid date values:", { month, day, year });
-    return ""; // Return an empty string if the values are invalid
-  }
-
-  // Create a new Date object
-  const formattedDate = new Date(year, month - 1, day);
-
-  // Check if the Date object is valid
-  if (isNaN(formattedDate.getTime())) {
-    console.error("Invalid Date object:", formattedDate);
-    return ""; // Return an empty string if the Date object is invalid
-  }
-
-  // Return the formatted date as 'YYYY-MM-DD'
-  return formattedDate.toISOString().split("T")[0];
+  // Format the date as YYYY-MM-DD
+  return format(parsedDate, "yyyy-MM-dd");
 };
 
 export const PropsModal: React.FC<PropsModalProps> = ({
@@ -90,15 +45,19 @@ export const PropsModal: React.FC<PropsModalProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
-    setModalData({
-      ...modalData,
+    setModalData((prevData) => ({
+      ...prevData,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
   const handleSaveChanges = () => {
-    onSave(modalData); // Save the updated data by calling onSave
-    onClose(); // Close the modal after saving
+    console.log(onSave);
+    if (onSave) {
+      console.log("Calling onSave with modalData:", modalData);
+      onSave(modalData);
+    }
+    onClose();
   };
 
   return (
@@ -139,7 +98,6 @@ export const PropsModal: React.FC<PropsModalProps> = ({
           type="number"
         />
 
-        {/* Date field */}
         <TextField
           label="Date"
           variant="outlined"
@@ -152,7 +110,6 @@ export const PropsModal: React.FC<PropsModalProps> = ({
           type="date"
         />
 
-        {/* Active checkbox */}
         {mode !== "view" && (
           <FormControlLabel
             control={
@@ -171,9 +128,11 @@ export const PropsModal: React.FC<PropsModalProps> = ({
         <Button onClick={onClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleSaveChanges} color="primary">
-          Save
-        </Button>
+        {mode !== "view" && (
+          <Button onClick={handleSaveChanges} color="primary">
+            Save
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

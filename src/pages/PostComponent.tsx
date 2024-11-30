@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ColDef } from "ag-grid-community";
 import { PostService } from "../services/PostService";
@@ -6,10 +6,59 @@ import DataGrid from "../components/DataGrid";
 import { GridOptions, Post } from "../types";
 import { PropsActionComponent } from "../components/PropsActionComponent";
 
+const columnDefs: ColDef<Post>[] = [
+  { field: "id", filter: "agTextColumnFilter", flex: 0.5 },
+  { field: "action", cellRenderer: memo(PropsActionComponent), flex: 1.2 },
+  { field: "title", filter: "agTextColumnFilter", flex: 1.2 },
+  { field: "views", filter: "agNumberColumnFilter" },
+  {
+    field: "active",
+  },
+  {
+    field: "date",
+    filter: "agDateColumnFilter",
+    filterParams: {
+      comparator: (dateFromFilter: number, cellValue: string | null) => {
+        if (cellValue == null) {
+          return 0;
+        }
+        const dateParts = cellValue.split("/");
+        const month = Number(dateParts[0]);
+        const day = Number(dateParts[1]);
+        const year = Number(dateParts[2]);
+        const cellDate: Date = new Date(year, month - 1, day); // Adjust for 0-based month
+
+        const cellDateTimestamp = cellDate.getTime(); // Convert cellDate to timestamp (number)
+
+        if (cellDateTimestamp < dateFromFilter) {
+          return -1;
+        } else if (cellDateTimestamp > dateFromFilter) {
+          return 1;
+        }
+        return 0;
+      },
+    },
+  },
+];
+
 const PostComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Save updated post after editing in the modal
+  const handleSavePost = (updatedPost: Post) => {
+    if (!updatedPost.id) {
+      console.error("Attempting to save a post without an ID:", updatedPost);
+      return;
+    }
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === updatedPost.id ? { ...post, ...updatedPost } : post
+      )
+    );
+    console.log("Post updated successfully:", updatedPost);
+  };
 
   const location = useLocation();
 
@@ -39,45 +88,11 @@ const PostComponent: React.FC = () => {
     : ""; // No need to normalize if we are on the /posts page
 
   // Filter posts using ProductService only if we're not on the /posts page
-  const filteredData = isPostsPage
-    ? posts
-    : PostService.getPostsByStatus(posts, normalizedUrl);
-
-  // Define columnDefs for the AG-Grid
-  const columnDefs: ColDef<Post>[] = [
-    { field: "id", filter: "agTextColumnFilter", flex: 0.5 },
-    { field: "action", cellRenderer: memo(PropsActionComponent), flex: 1.2 },
-    { field: "title", filter: "agTextColumnFilter", flex: 1.2 },
-    { field: "views", filter: "agNumberColumnFilter" },
-    {
-      field: "active",
-    },
-    {
-      field: "date",
-      filter: "agDateColumnFilter",
-      filterParams: {
-        comparator: (dateFromFilter: number, cellValue: string | null) => {
-          if (cellValue == null) {
-            return 0;
-          }
-          const dateParts = cellValue.split("/");
-          const month = Number(dateParts[0]);
-          const day = Number(dateParts[1]);
-          const year = Number(dateParts[2]);
-          const cellDate: Date = new Date(year, month - 1, day); // Adjust for 0-based month
-
-          const cellDateTimestamp = cellDate.getTime(); // Convert cellDate to timestamp (number)
-
-          if (cellDateTimestamp < dateFromFilter) {
-            return -1;
-          } else if (cellDateTimestamp > dateFromFilter) {
-            return 1;
-          }
-          return 0;
-        },
-      },
-    },
-  ];
+  const filteredData = useMemo(() => {
+    return isPostsPage
+      ? posts
+      : PostService.getPostsByStatus(posts, normalizedUrl);
+  }, [isPostsPage, posts, normalizedUrl]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -101,25 +116,16 @@ const PostComponent: React.FC = () => {
     headerHeight: 40, // Customize header height
   };
 
-  // Save updated post after editing in the modal
-  const handleSavePost = (updatedPost: Post) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) => (post.id === updatedPost.id ? updatedPost : post))
-    );
-  };
+  console.log("handleSavePost in PostComponent:", handleSavePost);
 
   return (
-    <div
-      className="ag-theme-quartz-dark"
-      style={{ height: "100vh", width: "100%" }}
-    >
-      <DataGrid gridOptions={productGridOptions} />
-      {/* Pass handleSavePost to PropsActionComponent */}
+    <div className="ag-theme-quartz-dark, viewPortHeight">
+      <DataGrid key={JSON.stringify(posts)} gridOptions={productGridOptions} />
       {posts.map((post) => (
         <PropsActionComponent
           key={post.id}
           data={post}
-          onSave={handleSavePost}
+          onSave={handleSavePost} // Pass this function correctly
         />
       ))}
     </div>

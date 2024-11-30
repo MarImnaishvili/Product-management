@@ -5,6 +5,39 @@ import DataGrid from "../components/DataGrid";
 import { ProductService } from "../services/ProductService";
 import { GridOptions, Product } from "../types";
 
+const columnDefs: ColDef<Product>[] = [
+  { field: "productId" },
+  { field: "productCode" },
+  { field: "productName" },
+  { field: "productLine" },
+  { field: "productScale" },
+  {
+    field: "productVendor",
+    cellEditor: "agSelectCellEditor",
+    cellEditorParams: {
+      values: [
+        "Min Lin Diecast",
+        "Classic Metal Creations",
+        "Highway 66 Mini Classics",
+        "Red Start Diecast",
+        "Motor City Art Classics",
+        "Second Gear Diecast",
+        "Autoart Studio Design",
+        "Welly Diecast Productions",
+        "Unimax Art Galleries",
+        "Studio M Art Models",
+        "Exoto Designs",
+        "Gearbox Collectibles",
+        "Carousel DieCast Legends",
+      ],
+    },
+  },
+  { field: "productDescription" },
+  { field: "quantityInStock" },
+  { field: "buyPrice" },
+  { field: "MSRP" },
+];
+
 const ProductComponent: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,39 +70,6 @@ const ProductComponent: React.FC = () => {
     products,
     normalizedUrl || ""
   );
-
-  const columnDefs: ColDef<Product>[] = [
-    { field: "productId" },
-    { field: "productCode" },
-    { field: "productName" },
-    { field: "productLine" },
-    { field: "productScale" },
-    {
-      field: "productVendor",
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: {
-        values: [
-          "Min Lin Diecast",
-          "Classic Metal Creations",
-          "Highway 66 Mini Classics",
-          "Red Start Diecast",
-          "Motor City Art Classics",
-          "Second Gear Diecast",
-          "Autoart Studio Design",
-          "Welly Diecast Productions",
-          "Unimax Art Galleries",
-          "Studio M Art Models",
-          "Exoto Designs",
-          "Gearbox Collectibles",
-          "Carousel DieCast Legends",
-        ],
-      },
-    },
-    { field: "productDescription" },
-    { field: "quantityInStock" },
-    { field: "buyPrice" },
-    { field: "MSRP" },
-  ];
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;

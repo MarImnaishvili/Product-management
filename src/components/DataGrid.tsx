@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -30,11 +30,6 @@ const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
     }),
     [defaultColDef]
   );
-
-  useEffect(() => {
-    // No need to manage rowData state manually since it is already passed in gridOptions.
-    // AG-Grid will handle this for you via the 'filteredData' prop.
-  }, [filteredData]);
 
   return (
     <div
