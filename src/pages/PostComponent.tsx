@@ -1,65 +1,45 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ColDef } from "ag-grid-community";
+import { ColDef, ICellRendererParams } from "ag-grid-community";
 import { PostService } from "../services/PostService";
 import DataGrid from "../components/DataGrid";
-import { GridOptions, Post } from "../types";
+import { GridOptionsType, Post } from "../types";
 import { PropsActionComponent } from "../components/PropsActionComponent";
+import { GridApi, IRowNode } from "ag-grid-community";
 
-const columnDefs: ColDef<Post>[] = [
-  { field: "id", filter: "agTextColumnFilter", flex: 0.5 },
-  { field: "action", cellRenderer: memo(PropsActionComponent), flex: 1.2 },
-  { field: "title", filter: "agTextColumnFilter", flex: 1.2 },
-  { field: "views", filter: "agNumberColumnFilter" },
-  {
-    field: "active",
-  },
-  {
-    field: "date",
-    filter: "agDateColumnFilter",
-    filterParams: {
-      comparator: (dateFromFilter: number, cellValue: string | null) => {
-        if (cellValue == null) {
-          return 0;
-        }
-        const dateParts = cellValue.split("/");
-        const month = Number(dateParts[0]);
-        const day = Number(dateParts[1]);
-        const year = Number(dateParts[2]);
-        const cellDate: Date = new Date(year, month - 1, day); // Adjust for 0-based month
+//may be exported
+const updateGridRowData = <T extends { id: string }>(
+  gridApi: GridApi | null,
+  updatedData: Partial<T> & { id: string }
+) => {
+  if (!gridApi) {
+    console.error("Grid API is not available.");
+    return;
+  }
 
-        const cellDateTimestamp = cellDate.getTime(); // Convert cellDate to timestamp (number)
-
-        if (cellDateTimestamp < dateFromFilter) {
-          return -1;
-        } else if (cellDateTimestamp > dateFromFilter) {
-          return 1;
-        }
-        return 0;
-      },
-    },
-  },
-];
+  gridApi.forEachNode((rowNode: IRowNode<T>) => {
+    if (rowNode.data?.id === updatedData.id) {
+      rowNode.setData({ ...rowNode.data, ...updatedData });
+    }
+  });
+};
 
 const PostComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
-  // Save updated post after editing in the modal
   const handleSavePost = (updatedPost: Post) => {
     if (!updatedPost.id) {
       console.error("Attempting to save a post without an ID:", updatedPost);
       return;
     }
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === updatedPost.id ? { ...post, ...updatedPost } : post
-      )
-    );
-    console.log("Post updated successfully:", updatedPost);
+    updateGridRowData(gridApi, updatedPost);
   };
-
+  const handleGridReady = (api: GridApi) => {
+    setGridApi(api);
+  };
   const location = useLocation();
 
   // Determine if we're on the /posts path
@@ -97,8 +77,61 @@ const PostComponent: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  const columnDefs: ColDef<Post>[] = [
+    { field: "id", filter: "agTextColumnFilter", flex: 0.5 },
+    {
+      field: "action",
+      cellRenderer: memo((params: ICellRendererParams<Post>) =>
+        params.data ? (
+          <PropsActionComponent
+            data={
+              params.data || {
+                id: "",
+                title: "",
+                views: 0,
+                active: false,
+                date: "",
+              }
+            }
+            onSave={handleSavePost}
+          />
+        ) : null
+      ),
+      flex: 1.2,
+    },
+    { field: "title", filter: "agTextColumnFilter", flex: 1.2 },
+    { field: "views", filter: "agNumberColumnFilter" },
+    {
+      field: "active",
+    },
+    {
+      field: "date",
+      filter: "agDateColumnFilter",
+      filterParams: {
+        comparator: (dateFromFilter: number, cellValue: string | null) => {
+          if (cellValue == null) {
+            return 0;
+          }
+          const dateParts = cellValue.split("/");
+          const month = Number(dateParts[0]);
+          const day = Number(dateParts[1]);
+          const year = Number(dateParts[2]);
+          const cellDate: Date = new Date(year, month - 1, day); // Adjust for 0-based month
+
+          const cellDateTimestamp = cellDate.getTime(); // Convert cellDate to timestamp (number)
+
+          if (cellDateTimestamp < dateFromFilter) {
+            return -1;
+          } else if (cellDateTimestamp > dateFromFilter) {
+            return 1;
+          }
+          return 0;
+        },
+      },
+    },
+  ];
   // Define GridOptions for DataGrid
-  const productGridOptions: GridOptions<Post> = {
+  const productGridOptions: GridOptionsType<Post> = {
     columnDefs,
     filteredData,
     error,
@@ -116,18 +149,20 @@ const PostComponent: React.FC = () => {
     headerHeight: 40, // Customize header height
   };
 
-  console.log("handleSavePost in PostComponent:", handleSavePost);
-
   return (
     <div className="ag-theme-quartz-dark, viewPortHeight">
-      <DataGrid key={JSON.stringify(posts)} gridOptions={productGridOptions} />
-      {posts.map((post) => (
+      <DataGrid
+        key={JSON.stringify(posts)}
+        gridOptions={productGridOptions}
+        onGridReady={handleGridReady}
+      />
+      {/* {posts.map((post) => (
         <PropsActionComponent
           key={post.id}
           data={post}
           onSave={handleSavePost} // Pass this function correctly
         />
-      ))}
+      ))} */}
     </div>
   );
 };

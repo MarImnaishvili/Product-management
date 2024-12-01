@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { ColDef } from "ag-grid-community";
 import DataGrid from "../components/DataGrid";
 import { ProductService } from "../services/ProductService";
-import { GridOptions, Product } from "../types";
+import { GridOptionsType, Product } from "../types";
 
 const columnDefs: ColDef<Product>[] = [
   { field: "productId" },
@@ -74,7 +74,7 @@ const ProductComponent: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  const productGridOptions: GridOptions<Product> = {
+  const productGridOptions: GridOptionsType<Product> = {
     columnDefs,
     filteredData,
     error,

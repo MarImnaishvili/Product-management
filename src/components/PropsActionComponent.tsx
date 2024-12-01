@@ -1,42 +1,34 @@
 import { useState } from "react";
 import { PropsModal } from "./PropsModal";
-import { Post, PropsActionComponentProps } from "../types";
+import { PropsActionComponentProps } from "../types";
 import { DialogActions, IconButton, Tooltip } from "@mui/material";
 import { Visibility, Edit, CheckCircle, Cancel } from "@mui/icons-material";
 
-export function PropsActionComponent({
+export const PropsActionComponent: React.FC<PropsActionComponentProps> = ({
   data,
   onSave,
-}: PropsActionComponentProps) {
+}) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [modalData, setModalData] = useState<Post>(data);
   const [modalMode, setModalMode] = useState<"view" | "edit" | "toggleActive">(
     "view"
   );
 
-  const openModal = (mode: "view" | "edit" | "toggleActive", data: Post) => {
-    setModalData(data);
+  const openModal = (mode: "view" | "edit" | "toggleActive") => {
     setModalMode(mode);
     setIsModalOpen(true);
   };
 
-  const handleEdit = () => openModal("edit", data);
-  const handleView = () => openModal("view", data);
-  const handleToggleActive = () =>
-    openModal("toggleActive", { ...data, active: !data.active });
-
-  const handleClick = () => {
-    console.log("Calling onSave from PropsActionComponent:", onSave);
-    onSave(data);
-  };
+  if (!data) {
+    // If `data` is undefined, do not render the modal actions
+    return null;
+  }
 
   return (
     <>
       <DialogActions>
-        <button onClick={handleClick}>Save</button>;
         <Tooltip title="View Details">
           <IconButton
-            onClick={handleView}
+            onClick={() => openModal("view")} // Pass `data` as the second argument
             color="primary"
             aria-label="View details"
           >
@@ -44,13 +36,17 @@ export function PropsActionComponent({
           </IconButton>
         </Tooltip>
         <Tooltip title="Edit">
-          <IconButton onClick={handleEdit} color="secondary" aria-label="Edit">
+          <IconButton
+            onClick={() => openModal("edit")} // Pass `data` as the second argument
+            color="secondary"
+            aria-label="Edit"
+          >
             <Edit />
           </IconButton>
         </Tooltip>
         <Tooltip title={data.active ? "Deactivate" : "Activate"}>
           <IconButton
-            onClick={handleToggleActive}
+            onClick={() => onSave({ ...data, active: !data.active })} // Directly toggle active
             color={data.active ? "default" : "success"}
             aria-label="Toggle active status"
           >
@@ -63,8 +59,8 @@ export function PropsActionComponent({
         <PropsModal
           open={isModalOpen}
           rowData={data}
-          modalData={modalData}
-          setModalData={setModalData}
+          modalData={data} // Directly pass `data` as `modalData`
+          setModalData={() => {}} // Optional, leave if modal modifies it
           onSave={onSave}
           onClose={() => setIsModalOpen(false)}
           mode={modalMode}
@@ -72,4 +68,4 @@ export function PropsActionComponent({
       )}
     </>
   );
-}
+};

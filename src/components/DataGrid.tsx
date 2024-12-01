@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { DataGridProps } from "../types";
 
-const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
+const DataGrid = <T,>({ gridOptions, onGridReady }: DataGridProps<T>) => {
   const {
     columnDefs,
     filteredData,
@@ -19,6 +19,13 @@ const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
     defaultColDef, // Now it's explicitly passed as a prop
   } = gridOptions;
 
+  const gridRef = useRef<AgGridReact>(null);
+
+  useEffect(() => {
+    if (onGridReady && gridRef.current) {
+      onGridReady(gridRef.current.api);
+    }
+  }, [onGridReady]);
   // Memoized default column definitions, overriding as necessary
   const memoizedColDef = useMemo(
     () => ({
@@ -26,7 +33,7 @@ const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
       flex: 1,
       sortable: true,
       filter: true,
-      editable: true, // This will ensure columns take up available space
+      //editable: true,
     }),
     [defaultColDef]
   );
@@ -34,11 +41,12 @@ const DataGrid = <T,>({ gridOptions }: DataGridProps<T>) => {
   return (
     <div
       className="ag-theme-quartz-dark"
-      style={{ height: "100vh", width: gridWidth }}
+      style={{ height: "100vh", width: gridWidth || "100%" }}
     >
       {loading && <p>Loading...</p>}
       {error && <p>Error fetching data: {error}</p>}
       <AgGridReact
+        ref={gridRef}
         columnDefs={columnDefs}
         rowData={filteredData} // Directly pass filteredData as rowData
         pagination={pagination}

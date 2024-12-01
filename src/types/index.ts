@@ -1,8 +1,8 @@
-import { ColDef } from "ag-grid-community";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ColDef, GridApi } from "ag-grid-community";
 
 export interface Post {
   id: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: any;
   title: string;
   views: number;
@@ -24,8 +24,8 @@ export interface Product {
 }
 
 // Define GridOptions interface with generics
-export interface GridOptions<T> {
-  columnDefs: ColDef<T>[];
+export interface GridOptionsType<T> {
+  columnDefs: ColDef<T, any>[];
   filteredData: T[];
   error: string | null;
   loading: boolean;
@@ -33,14 +33,15 @@ export interface GridOptions<T> {
   gridWidth?: string;
   pagination?: boolean;
   paginationPageSize?: number;
-  defaultColDef?: ColDef<T>;
+  defaultColDef?: ColDef<T, any>;
   paginationPageSizeSelector?: number[];
   domLayout?: string;
   headerHeight?: number;
 }
 
 export interface DataGridProps<T> {
-  gridOptions: GridOptions<T>;
+  gridOptions: GridOptionsType<T>;
+  onGridReady?: (gridApi: GridApi<T>) => void; // Add this line
 }
 
 export interface IColDef {
@@ -61,6 +62,9 @@ export interface PropsModalProps {
 }
 
 export interface PropsActionComponentProps {
-  data: Post;
+  data: Post | undefined;
   onSave: (updatedPost: Post) => void; // onSave is passed from PostComponent
 }
+// export type HandleSaveProps = {
+//   gridApi: GridApi | null;
+// };

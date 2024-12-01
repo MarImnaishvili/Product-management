@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PropsModalProps } from "../types";
 import {
   Checkbox,
@@ -23,7 +23,6 @@ const formatDate = (date: string): string => {
     console.error("Invalid date format:", date);
     return "";
   }
-
   // Format the date as YYYY-MM-DD
   return format(parsedDate, "yyyy-MM-dd");
 };
@@ -32,37 +31,45 @@ export const PropsModal: React.FC<PropsModalProps> = ({
   rowData,
   onClose,
   open,
-  modalData,
-  setModalData,
-  mode,
   onSave,
+  mode,
 }) => {
+  const [modalData, setModalData] = useState(rowData);
+
   useEffect(() => {
-    if (open && rowData) {
-      setModalData({ ...rowData });
+    if (open) {
+      setModalData(rowData); // Reset modal data on open
     }
-  }, [open, rowData, setModalData]);
+  }, [open, rowData]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
-    setModalData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    setModalData((prevData) => {
+      if (prevData) {
+        return {
+          ...prevData,
+          [name]:
+            type === "checkbox"
+              ? checked
+              : type === "number"
+              ? Number(value)
+              : value,
+        };
+      }
+      return null;
+    });
   };
 
   const handleSaveChanges = () => {
-    console.log(onSave);
-    if (onSave) {
-      console.log("Calling onSave with modalData:", modalData);
-      onSave(modalData);
+    if (modalData) {
+      onSave(modalData); // Ensure modalData is passed correctly
     }
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Row Details</DialogTitle>
+      <DialogTitle>{mode === "edit" ? "Edit Post" : "View Post"}</DialogTitle>
       <DialogContent>
         <TextField
           label="ID"
@@ -74,7 +81,6 @@ export const PropsModal: React.FC<PropsModalProps> = ({
           onChange={handleInputChange}
           disabled={mode === "view"}
         />
-
         <TextField
           label="Title"
           variant="outlined"
@@ -85,7 +91,6 @@ export const PropsModal: React.FC<PropsModalProps> = ({
           onChange={handleInputChange}
           disabled={mode === "view"}
         />
-
         <TextField
           label="Views"
           variant="outlined"
@@ -97,7 +102,6 @@ export const PropsModal: React.FC<PropsModalProps> = ({
           disabled={mode === "view"}
           type="number"
         />
-
         <TextField
           label="Date"
           variant="outlined"
@@ -109,7 +113,6 @@ export const PropsModal: React.FC<PropsModalProps> = ({
           disabled={mode === "view"}
           type="date"
         />
-
         {mode !== "view" && (
           <FormControlLabel
             control={

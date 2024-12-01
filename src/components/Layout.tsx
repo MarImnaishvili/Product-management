@@ -9,6 +9,7 @@ import AppTheme, { useThemeMode } from "../theme/AppTheme";
 // import { Brightness4, Brightness7 } from "@mui/icons-material";
 
 export default function Layout() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { toggleTheme, themeMode } = useThemeMode();
 
   return (
