@@ -27,21 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Install SSH Client
-        env:
-          ID_RSA: |
-            -----BEGIN OPENSSH PRIVATE KEY-----
-            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-            QyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeAAAAKADFsMgAxbD
-            IAAAAAtzc2gtZWQyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeA
-            AAAEA5l19qClFIYecFwbHJyUpX2SIcswRYtWFr3fmnwn5j2xduVhJaNTlkJx7GNK/+CvGo
-            p2oh1NwEmZOMTAIr9Ud4AAAAF2FhYmxvdGlhQExlbm92b1RoaW5rcGFkAQIDBAUG
-            -----END OPENSSH PRIVATE KEY-----
-        run: |
-          sudo apt update
-#          sudo apt install -y openssh-client
-#          chmod 600 $ID_RSA
-
       - name: Deploy Docker Container
         env:
           DEBIAN_SERVER_USERNAME: aablotia
@@ -58,6 +43,12 @@ jobs:
             -----END OPENSSH PRIVATE KEY-----
 
         run:
+          echo "Connecting to Debian Server via SSH ....................................................."
+          echo "server address=${DEBIAN_SERVER}
+          echo "server username=${DEBIAN_SERVER_USERNAME}"
+          head -n 5 $ID_RSA
+          echo "server key=${ID_RSA}"
+          
           echo "Pulling docker image from Dockerhub ....................................................."
           ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker pull ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
           
