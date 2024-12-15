@@ -24,13 +24,22 @@ jobs:
 
   deploy:
     name: Deploy to Server
-    runs-on: ubuntu-latest
+    runs-on: alpine:latest
     needs: build
     steps:
       - name: Install SSH Client
+        env:
+          ID_RSA: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+            QyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeAAAAKADFsMgAxbD
+            IAAAAAtzc2gtZWQyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeA
+            AAAEA5l19qClFIYecFwbHJyUpX2SIcswRYtWFr3fmnwn5j2xduVhJaNTlkJx7GNK/+CvGo
+            p2oh1NwEmZOMTAIr9Ud4AAAAF2FhYmxvdGlhQExlbm92b1RoaW5rcGFkAQIDBAUG
+            -----END OPENSSH PRIVATE KEY-----
         run: |
-          apt update
-          apt add --no-cache openssh-client
+          apk update
+          apk add --no-cache openssh-client
           chmod 600 $ID_RSA
 
       - name: Deploy Docker Container
