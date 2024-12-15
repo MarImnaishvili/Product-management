@@ -1,0 +1,50 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      run: echo aByF4bBc#yd3Li67 | docker login -u aablotia --password-stdin
+
+    - name: Build Docker Image
+      run: |
+        docker build -t aablotia/react-app:latest .
+
+    - name: Push Docker Image to Docker Hub
+      run: docker push aablotia/react-app:latest
+
+  # deploy:
+  #   name: Deploy to Server
+  #   runs-on: ubuntu-latest
+  #   needs: build
+
+  #   steps:
+  #   - name: Install SSH Client
+  #     run: sudo apt-get install -y openssh-client
+
+  #   - name: Deploy Docker Container
+  #     env:
+  #       DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/react-app:latest
+  #       SSH_HOST: ${{ secrets.SSH_HOST }}
+  #       SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+  #     run: |
+  #       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
+  #       chmod 600 ssh_key
+  #       ssh -i ssh_key -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST << 'EOF'
+  #         docker pull $DOCKER_IMAGE
+  #         docker stop react-app || true
+  #         docker rm react-app || true
+  #         docker run -d --name react-app -p 80:80 $DOCKER_IMAGE
+  #       EOF
+  #       rm ssh_key
