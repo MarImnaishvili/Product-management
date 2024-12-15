@@ -39,8 +39,8 @@ jobs:
             -----END OPENSSH PRIVATE KEY-----
         run: |
           sudo apt update
-          sudo apt install -y openssh-client
-          chmod 600 $ID_RSA
+#          sudo apt install -y openssh-client
+#          chmod 600 $ID_RSA
 
       - name: Deploy Docker Container
         env:
