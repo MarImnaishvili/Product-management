@@ -10,6 +10,8 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
 
+
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
@@ -23,27 +25,42 @@ jobs:
     - name: Push Docker Image to Docker Hub
       run: docker push aablotia/react-app:latest
 
-  # deploy:
-  #   name: Deploy to Server
-  #   runs-on: ubuntu-latest
-  #   needs: build
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: build
 
-  #   steps:
-  #   - name: Install SSH Client
-  #     run: sudo apt-get install -y openssh-client
+    steps:
+      - name: Install SSH Client
+        run:
+          apk update
+          apk add --no-cache openssh-client
+          chmod 600 $ID_RSA
 
-  #   - name: Deploy Docker Container
-  #     env:
-  #       DOCKER_IMAGE: aablotia/react-app:latest
-  #       SSH_HOST: ${{ secrets.SSH_HOST }}
-  #       SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-  #     run: |
-  #       echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
-  #       chmod 600 ssh_key
-  #       ssh -i ssh_key -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST << 'EOF'
-  #         docker pull $DOCKER_IMAGE
-  #         docker stop react-app || true
-  #         docker rm react-app || true
-  #         docker run -d --name react-app -p 80:80 $DOCKER_IMAGE
-  #       EOF
-  #       rm ssh_key
+      - name: Deploy Docker Container
+        env:
+          DEBIAN_SERVER_USERNAME: aablotia
+          DEBIAN_SERVER: 108.17.127.80
+          DOCKERHUB_USERNAME: aablotia
+          ID_RSA: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+            QyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeAAAAKADFsMgAxbD
+            IAAAAAtzc2gtZWQyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeA
+            AAAEA5l19qClFIYecFwbHJyUpX2SIcswRYtWFr3fmnwn5j2xduVhJaNTlkJx7GNK/+CvGo
+            p2oh1NwEmZOMTAIr9Ud4AAAAF2FhYmxvdGlhQExlbm92b1RoaW5rcGFkAQIDBAUG
+            -----END OPENSSH PRIVATE KEY-----
+
+        run:
+          echo "Pulling docker image from Dockerhub ....................................................."
+          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker pull ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
+          
+          echo "Stopping application infohub in docker container ....................................................."
+          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker stop infohub || true"
+          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker rm infohub || true"
+
+          echo "Running application in docker container ....................................................."
+          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker run -d --network="host" --name infohub ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
+
+
+
