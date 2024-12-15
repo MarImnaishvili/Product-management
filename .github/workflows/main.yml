@@ -47,6 +47,7 @@ jobs:
           DEBIAN_SERVER_USERNAME: aablotia
           DEBIAN_SERVER: 108.17.127.80
           DOCKERHUB_USERNAME: aablotia
+          ARTIFACT_ID: react-app
           ID_RSA: |
             -----BEGIN OPENSSH PRIVATE KEY-----
             b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
@@ -61,11 +62,11 @@ jobs:
           ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker pull ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
           
           echo "Stopping application infohub in docker container ....................................................."
-          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker stop infohub || true"
-          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker rm infohub || true"
+          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker stop react-app || true"
+          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker rm react-app || true"
 
           echo "Running application in docker container ....................................................."
-          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker run -d --network="host" --name infohub ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
+          ssh -i $ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker run -d --network="host" --name react-app ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
 
 
 
