@@ -53,6 +53,7 @@ jobs:
           ssh -i id_rsa -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker rm react-app || true"
 
           echo "Running application in docker container ....................................................."
-          ssh -i id_rsa -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker run -d --network=host --name react-app -e PORT=3000 ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
+          ssh -i id_rsa -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker run -d -p 3000:80 --name react-app ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
+
 
 
