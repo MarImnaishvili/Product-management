@@ -43,6 +43,8 @@ jobs:
             -----END OPENSSH PRIVATE KEY-----
 
         run: |
+          echo "${ID_RSA}" > id_rsa
+          chmod 600 id_rsa
           echo "Pulling docker image  react-app from Dockerhub ....................................................."
           ssh -i ID_RSA -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker pull ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
           
