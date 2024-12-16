@@ -4,13 +4,13 @@ import Header from "./Header";
 import SideMenu from "./SideMenu";
 import { Outlet } from "react-router-dom";
 import Stack from "@mui/material/Stack";
-import AppTheme, { useThemeMode } from "../theme/AppTheme";
+import AppTheme from "../theme/AppTheme";
 // import IconButton from "@mui/material/IconButton";
 // import { Brightness4, Brightness7 } from "@mui/icons-material";
 
 export default function Layout() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { toggleTheme, themeMode } = useThemeMode();
+  // const { toggleTheme, themeMode } = useThemeMode();
 
   return (
     <AppTheme>
