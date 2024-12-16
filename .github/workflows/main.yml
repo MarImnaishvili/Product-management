@@ -1,6 +1,8 @@
-name: CI/CD Pipeline
-
+name: Deployment to dev, test and qa
 on:
+  push:
+    branches:
+      - test
   workflow_dispatch:
 
 jobs:
