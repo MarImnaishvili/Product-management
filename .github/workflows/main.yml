@@ -22,8 +22,24 @@ jobs:
     - name: Push Docker Image to Docker Hub
       run: docker push aablotia/react-app:latest
 
-  deploy:
-    name: Deploy to Server
+  run_tests:
+    name: Dummy Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep for 3 seconds
+        run: sleep 3
+
+
+
+  sonarqube:
+    name: Dummy Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep for 3 seconds
+        run: sleep 3
+
+  deploy-DEV:
+    name: Deploy to Server - DEV
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -55,5 +71,16 @@ jobs:
           echo "Running application in docker container ....................................................."
           ssh -i id_rsa -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker run -d -p 3000:80 --name react-app ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
 
+  deploy-TEST:
+    name: Dummy Job TEST
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep for 3 seconds
+        run: sleep 3
 
-
+  deploy-QA:
+    name: Dummy Job QA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sleep for 3 seconds
+        run: sleep 3
