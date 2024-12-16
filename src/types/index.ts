@@ -11,7 +11,7 @@ export interface Post {
 }
 
 export interface Product {
-  productId: string;
+  id: string;
   productCode: string;
   productName: string;
   productLine: string;

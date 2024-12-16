@@ -79,7 +79,7 @@ export const PropsModal: React.FC<PropsModalProps> = ({
           name="id"
           value={modalData?.id || ""}
           onChange={handleInputChange}
-          disabled={mode === "view"}
+          disabled
         />
         <TextField
           label="Title"

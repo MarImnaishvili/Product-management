@@ -40,6 +40,7 @@ const PostComponent: React.FC = () => {
   const handleGridReady = (api: GridApi) => {
     setGridApi(api);
   };
+
   const location = useLocation();
 
   // Determine if we're on the /posts path
@@ -62,12 +63,10 @@ const PostComponent: React.FC = () => {
     fetchPosts();
   }, []);
 
-  // If it's not the /posts page, normalize the URL for filtering (assuming that the pathname may contain a query string or slug)
   const normalizedUrl = !isPostsPage
     ? location.pathname.split("/")[2]?.trim().replace(/-/g, " ")
     : ""; // No need to normalize if we are on the /posts page
 
-  // Filter posts using ProductService only if we're not on the /posts page
   const filteredData = useMemo(() => {
     return isPostsPage
       ? posts
@@ -156,13 +155,6 @@ const PostComponent: React.FC = () => {
         gridOptions={productGridOptions}
         onGridReady={handleGridReady}
       />
-      {/* {posts.map((post) => (
-        <PropsActionComponent
-          key={post.id}
-          data={post}
-          onSave={handleSavePost} // Pass this function correctly
-        />
-      ))} */}
     </div>
   );
 };

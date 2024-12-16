@@ -6,9 +6,9 @@ import { ProductService } from "../services/ProductService";
 import { GridOptionsType, Product } from "../types";
 
 const columnDefs: ColDef<Product>[] = [
-  { field: "productId" },
+  { field: "id" },
   { field: "productCode" },
-  { field: "productName" },
+  { field: "productName", pinned: "left", minWidth: 50 },
   { field: "productLine" },
   { field: "productScale" },
   {

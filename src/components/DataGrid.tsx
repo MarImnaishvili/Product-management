@@ -26,6 +26,7 @@ const DataGrid = <T,>({ gridOptions, onGridReady }: DataGridProps<T>) => {
       onGridReady(gridRef.current.api);
     }
   }, [onGridReady]);
+
   // Memoized default column definitions, overriding as necessary
   const memoizedColDef = useMemo(
     () => ({
@@ -33,6 +34,8 @@ const DataGrid = <T,>({ gridOptions, onGridReady }: DataGridProps<T>) => {
       flex: 1,
       sortable: true,
       filter: true,
+      resizable: true,
+
       //editable: true,
     }),
     [defaultColDef]
