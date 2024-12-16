@@ -23,8 +23,9 @@ jobs:
       run: docker push aablotia/react-app:latest
 
   run_tests:
-    name: Dummy Job
+    name: run tests
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Sleep for 3 seconds
         run: sleep 3
@@ -32,8 +33,9 @@ jobs:
 
 
   sonarqube:
-    name: Dummy Job
+    name: sonarqube
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Sleep for 3 seconds
         run: sleep 3
@@ -41,7 +43,7 @@ jobs:
   deploy-DEV:
     name: Deploy to Server - DEV
     runs-on: ubuntu-latest
-    needs: build
+    needs: run_tests
     steps:
       - name: Deploy Docker Container
         env:
@@ -71,16 +73,24 @@ jobs:
           echo "Running application in docker container ....................................................."
           ssh -i id_rsa -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker run -d -p 3000:80 --name react-app ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
 
+  
+  
+
+
   deploy-TEST:
-    name: Dummy Job TEST
+    name: Deploy to Server - TEST
     runs-on: ubuntu-latest
+    needs: deploy-DEV
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Sleep for 3 seconds
         run: sleep 3
 
   deploy-QA:
-    name: Dummy Job QA
+    name: Deploy to Server - QA
     runs-on: ubuntu-latest
+    needs: deploy-TEST
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Sleep for 3 seconds
         run: sleep 3
