@@ -1,4 +1,4 @@
-name: Deployment to DEV
+name: 1-DeploymentToDEV
 on:
   push:
     branches:
