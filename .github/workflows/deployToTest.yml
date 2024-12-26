@@ -1,6 +1,9 @@
 name: 2 - Deployment to TEST
 
 on:
+  push:
+    branches:
+      - test
   workflow_dispatch:
     inputs:
       artifact_version:
