@@ -3,6 +3,13 @@ name: 3 - Deployment to PROD
 on:
   workflow_dispatch:
     inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - prod
       artifact_version:
         description: 'Container version to deploy in Prod'
         required: true
