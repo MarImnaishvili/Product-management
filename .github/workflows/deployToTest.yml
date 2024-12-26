@@ -3,22 +3,33 @@ name: 2 - Deployment to TEST
 on:
   workflow_dispatch:
     inputs:
-      artifact_version:
-        description: 'Container version to deploy'
+      logLevel:
+        description: 'Log level'
         required: true
-        default: 'latest'
-      comments:
-        description: 'Optional comments'
+        default: 'warning'
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      tags:
+        description: 'Test scenario tags'
         required: false
+        type: boolean
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: true
 
 jobs:
-  upload_to_artifactory:
-    name: upload_to_artifactory
+  log-the-inputs:
     runs-on: ubuntu-latest
     steps:
-      - name: Sleep for 3 seconds
-        run: sleep 3
-      - name: Wait for 10 seconds
-        run: sleep 10
-      - name: Check Status
-        run: echo "Deployment to Test is successful"
+      - run: |
+          echo "Log level: $LEVEL"
+          echo "Tags: $TAGS"
+          echo "Environment: $ENVIRONMENT"
+        env:
+          LEVEL: ${{ inputs.logLevel }}
+          TAGS: ${{ inputs.tags }}
+          ENVIRONMENT: ${{ inputs.environment }}
