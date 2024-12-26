@@ -12,13 +12,13 @@ on:
         required: false
 
 jobs:
-  upload_to_artifactory:
-    name: upload_to_artifactory
+  deployContainerInTest:
+    name: deploy docker container in Test
     runs-on: ubuntu-latest
     steps:
-      - name: Sleep for 3 seconds
+      - name: Download docker container from docker hub
         run: sleep 3
-      - name: Wait for 10 seconds
-        run: sleep 10
-      - name: Check Status
+      - name: Deploy in Test
+        run: sleep 3
+      - name: Check Deployment Status
         run: echo "Deployment to Test is successful"
