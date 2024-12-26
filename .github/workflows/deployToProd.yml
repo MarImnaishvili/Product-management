@@ -1,10 +1,10 @@
-name: 4 - Deployment to PROD
+name: 3 - Deployment to PROD
 
 on:
   workflow_dispatch:
     inputs:
       artifact_version:
-        description: 'Container version to deploy'
+        description: 'Container version to deploy in Prod'
         required: true
         default: 'latest'
       comments:
@@ -12,13 +12,13 @@ on:
         required: false
 
 jobs:
-  upload_to_artifactory:
-    name: upload_to_artifactory
+  deployContainerInProd:
+    name: deploy docker container in Prod
     runs-on: ubuntu-latest
     steps:
-      - name: Sleep for 3 seconds
-        run: sleep 3
-      - name: Wait for 10 seconds
+      - name: Download docker container from docker hub
         run: sleep 10
-      - name: Check Status
+      - name: Deploy in Prod
+        run: sleep 10
+      - name: Check Deployment Status
         run: echo "Deployment to Prod is successful"
