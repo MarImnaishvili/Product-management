@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       artifact_version:
-        description: 'Container version to deploy'
+        description: 'Container version to deploy in Test'
         required: true
         default: 'latest'
       comments:
