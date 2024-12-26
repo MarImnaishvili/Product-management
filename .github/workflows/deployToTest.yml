@@ -3,6 +3,13 @@ name: 2 - Deployment to TEST
 on:
   workflow_dispatch:
     inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - test
       artifact_version:
         description: 'Container version to deploy in Test'
         required: true
