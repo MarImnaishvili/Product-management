@@ -2,7 +2,7 @@ name: 1 - Deployment to DEV
 on:
   push:
     branches:
-      - test
+      - dev
 jobs:
   build:
     name: build
