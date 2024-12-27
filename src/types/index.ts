@@ -11,16 +11,20 @@ export interface Post {
 }
 
 export interface Product {
-  productId: string;
+  id: number;
   productCode: string;
   productName: string;
-  productLine: string;
-  productScale: string;
+  productCategory: string;
   productVendor: string;
   productDescription: string;
-  quantityInStock: number;
-  buyPrice: number;
-  MSRP: number;
+  productQtyInStock: number;
+  productPrice: number;
+  msrp: number;
+  isAvailable: boolean;
+  createdBy: string;
+  createdTimestamp: string;
+  updatedBy: string;
+  updatedTimestamp: string;
 }
 
 // Define GridOptions interface with generics
