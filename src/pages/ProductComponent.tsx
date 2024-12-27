@@ -6,36 +6,26 @@ import { ProductService } from "../services/ProductService";
 import { GridOptionsType, Product } from "../types";
 
 const columnDefs: ColDef<Product>[] = [
-  { field: "productId" },
+  { field: "id" },
   { field: "productCode" },
   { field: "productName" },
-  { field: "productLine" },
-  { field: "productScale" },
   {
-    field: "productVendor",
+    field: "productCategory",
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
-      values: [
-        "Min Lin Diecast",
-        "Classic Metal Creations",
-        "Highway 66 Mini Classics",
-        "Red Start Diecast",
-        "Motor City Art Classics",
-        "Second Gear Diecast",
-        "Autoart Studio Design",
-        "Welly Diecast Productions",
-        "Unimax Art Galleries",
-        "Studio M Art Models",
-        "Exoto Designs",
-        "Gearbox Collectibles",
-        "Carousel DieCast Legends",
-      ],
+      values: ["Smartphone", "Electronics"],
     },
   },
+  { field: "productVendor" },
   { field: "productDescription" },
-  { field: "quantityInStock" },
-  { field: "buyPrice" },
-  { field: "MSRP" },
+  { field: "productQtyInStock" },
+  { field: "productPrice" },
+  { field: "msrp" },
+  { field: "isAvailable" },
+  { field: "createdBy" },
+  { field: "createdTimestamp" },
+  { field: "updatedBy" },
+  { field: "updatedTimestamp" },
 ];
 
 const ProductComponent: React.FC = () => {
@@ -46,6 +36,7 @@ const ProductComponent: React.FC = () => {
   const location = useLocation();
   const productLineFromUrl = location.pathname.split("/")[2];
   const normalizedUrl = productLineFromUrl?.trim().replace(/-/g, " ");
+  console.log("location", location);
 
   // Fetch products when the component mounts
   useEffect(() => {
@@ -66,7 +57,7 @@ const ProductComponent: React.FC = () => {
   }, []);
 
   // Filter products using ProductService
-  const filteredData = ProductService.getProductsByProductLine(
+  const filteredData = ProductService.getProductsByProductCategory(
     products,
     normalizedUrl || ""
   );

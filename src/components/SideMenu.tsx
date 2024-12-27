@@ -129,13 +129,8 @@ export default function SideMenu() {
                   }}
                 >
                   <option value="">All Product Line</option>
-                  <option value="Classic Cars">Classic Cars</option>
-                  <option value="Motorcycles">Motorcycles</option>
-                  <option value="Trucks and Buses">rucks and Buses</option>
-                  <option value="Vintage Cars">Vintage Cars</option>
-                  <option value="Planes">Planes</option>
-                  <option value="Ships">Ships</option>
-                  <option value="trains">trains</option>
+                  <option value="Smartphone">Smartphone</option>
+                  <option value="Electronics">Electronics</option>
                 </select>
               </Box>
             </Typography>
