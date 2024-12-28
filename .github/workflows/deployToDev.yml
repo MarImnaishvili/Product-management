@@ -67,6 +67,7 @@ jobs:
       - name: Push Docker Image to Docker Hub
         run: docker push aablotia/react-app:${{ env.VERSION }}
 
+
   deploy-DEV:
     name: Deploy to Server - DEV
     runs-on: ubuntu-latest
