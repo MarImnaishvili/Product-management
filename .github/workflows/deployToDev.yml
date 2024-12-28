@@ -58,6 +58,12 @@ jobs:
       - name: Log in to Docker Hub
         run: echo aByF4bBc#yd3Li67 | docker login -u aablotia --password-stdin
 
+      - name: Get Version
+        id: get_version
+        run: |
+          echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          echo "VERSION=$(jq -r .version package.json)"
+
       - name: Build Docker Image
         run: docker build -t aablotia/react-app:${{ env.VERSION }} .
 
