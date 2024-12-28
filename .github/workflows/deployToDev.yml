@@ -69,14 +69,7 @@ jobs:
           DEBIAN_SERVER: 108.17.127.80
           DOCKERHUB_USERNAME: aablotia
           ARTIFACT_ID: react-app
-          ID_RSA: |
-            -----BEGIN OPENSSH PRIVATE KEY-----
-            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-            QyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeAAAAKADFsMgAxbD
-            IAAAAAtzc2gtZWQyNTUxOQAAACAXblYSWjU5ZCcexjSv/grxqKdqIdTcBJmTjEwCK/VHeA
-            AAAEA5l19qClFIYecFwbHJyUpX2SIcswRYtWFr3fmnwn5j2xduVhJaNTlkJx7GNK/+CvGo
-            p2oh1NwEmZOMTAIr9Ud4AAAAF2FhYmxvdGlhQExlbm92b1RoaW5rcGFkAQIDBAUG
-            -----END OPENSSH PRIVATE KEY-----
+          ID_RSA: ${{ secrets.ID_RSA }}
 
         run: |
           echo "${ID_RSA}" > id_rsa
