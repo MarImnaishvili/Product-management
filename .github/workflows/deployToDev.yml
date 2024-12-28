@@ -73,6 +73,7 @@ jobs:
 
         run: |
           echo "${ID_RSA}" > id_rsa
+          echo "${ID_RSA}"
           chmod 600 id_rsa
           echo "Pulling docker image  react-app from Dockerhub ....................................................."
           ssh -i id_rsa -o StrictHostKeyChecking=no $DEBIAN_SERVER_USERNAME@$DEBIAN_SERVER "docker pull ${DOCKERHUB_USERNAME}/${ARTIFACT_ID}:latest"
