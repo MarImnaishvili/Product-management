@@ -87,6 +87,8 @@ jobs:
           ID_RSA: ${{ secrets.ID_RSA }}
 
         run: |
+          echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          echo "VERSION=$(jq -r .version package.json)"
           echo "${ID_RSA}" > id_rsa
           chmod 600 id_rsa
           echo "Pulling docker image  react-app from Dockerhub ....................................................."
