@@ -84,7 +84,7 @@ export default function SideMenu() {
             sx={{ fontWeight: 500, lineHeight: "16px" }}
             pb={3}
           >
-            Product Management V6
+            Product Management V6.1
           </Typography>
           <div>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
