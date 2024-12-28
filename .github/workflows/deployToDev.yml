@@ -80,18 +80,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Get Version
-        id: get_version
+      - name: Get Artifact ID and Version
+        id: get_artifact_id_and_version
         run: |
+          echo "ARTIFACT_ID=$(jq -r .name package.json)" >> $GITHUB_ENV
           echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-          echo "VERSION=$(jq -r .version package.json)"  
+          echo "ARTIFACT_ID=$(jq -r .name package.json)"
+          echo "VERSION=$(jq -r .version package.json)" 
 
       - name: Deploy Docker Container
         env:
           DEBIAN_SERVER_USERNAME: aablotia
           DEBIAN_SERVER: 108.17.127.80
           DOCKERHUB_USERNAME: aablotia
-          ARTIFACT_ID: react-app
+          ARTIFACT_ID: ${{ env.ARTIFACT_ID }}
           VERSION: ${{ env.VERSION }}
           ID_RSA: ${{ secrets.ID_RSA }}
 
