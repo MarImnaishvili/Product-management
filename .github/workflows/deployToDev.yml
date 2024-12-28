@@ -60,6 +60,7 @@ jobs:
         env:
           ARTIFACT_ID: react-app
           VERSION: ${{ env.VERSION }}
+        run: echo "VERSION=$(jq -r .version package.json)"
 
       - name: Build Docker Image
         run: docker build -t aablotia/react-app:${{ env.VERSION }} .
