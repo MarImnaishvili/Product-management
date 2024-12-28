@@ -57,10 +57,10 @@ jobs:
         run: echo aByF4bBc#yd3Li67 | docker login -u aablotia --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t aablotia/react-app:latest .
+        run: docker build -t aablotia/react-app:${{ env.VERSION }} .
 
       - name: Push Docker Image to Docker Hub
-        run: docker push aablotia/react-app:latest
+        run: docker push aablotia/react-app:${{ env.VERSION }}
 
   deploy-DEV:
     name: Deploy to Server - DEV
