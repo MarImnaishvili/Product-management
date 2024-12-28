@@ -19,7 +19,9 @@ jobs:
 
       - name: Get Version
         id: get_version
-        run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          echo "VERSION=$(jq -r .version package.json)"
 
   run_tests:
     name: run tests
