@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColDef, GridApi } from "ag-grid-community";
+//import { SetStateAction } from "react";
 
 export interface Post {
   id: string;
@@ -11,7 +12,8 @@ export interface Post {
 }
 
 export interface Product {
-  id: number;
+  id: number | undefined;
+  action?: any;
   productCode: string;
   productName: string;
   productCategory: string;
@@ -21,16 +23,18 @@ export interface Product {
   productPrice: number;
   msrp: number;
   isAvailable: boolean;
-  createdBy: string;
-  createdTimestamp: string;
-  updatedBy: string;
-  updatedTimestamp: string;
+  createdBy?: string;
+  createdTimestamp?: string;
+  updatedBy?: string;
+  updatedTimestamp?: string;
 }
+//export type RowDataType = Post | Product;
 
 // Define GridOptions interface with generics
 export interface GridOptionsType<T> {
   columnDefs: ColDef<T, any>[];
-  filteredData: T[];
+  rowData: Product[];
+  filteredData?: T[];
   error: string | null;
   loading: boolean;
   rowHeight?: number;
@@ -61,14 +65,29 @@ export interface PropsModalProps {
   open: boolean;
   modalData: Post;
   setModalData: React.Dispatch<React.SetStateAction<Post>>;
-  mode: "view" | "edit" | "toggleActive";
+  mode: "view" | "edit" | "New";
   onSave: (updatedPost: Post) => void;
 }
 
 export interface PropsActionComponentProps {
-  data: Post | undefined;
-  onSave: (updatedPost: Post) => void; // onSave is passed from PostComponent
+  data: Post | Product | undefined;
+  onSave: (updatedData: Product) => Promise<void>; // onSave is passed from PostComponent
 }
 // export type HandleSaveProps = {
 //   gridApi: GridApi | null;
 // };
+
+export interface FieldConfig {
+  name: string;
+  label: string;
+  type: "text" | "number" | "checkbox" | "date";
+  disabled: boolean;
+}
+
+export interface ProductModalProps {
+  rowData: Product;
+  onClose: () => void;
+  open: boolean;
+  onSave: (data: Product) => void;
+  mode: "view" | "edit" | "New";
+}

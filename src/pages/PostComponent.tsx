@@ -5,24 +5,8 @@ import { PostService } from "../services/PostService";
 import DataGrid from "../components/DataGrid";
 import { GridOptionsType, Post } from "../types";
 import { PropsActionComponent } from "../components/PropsActionComponent";
-import { GridApi, IRowNode } from "ag-grid-community";
-
-//may be exported
-const updateGridRowData = <T extends { id: string }>(
-  gridApi: GridApi | null,
-  updatedData: Partial<T> & { id: string }
-) => {
-  if (!gridApi) {
-    console.error("Grid API is not available.");
-    return;
-  }
-
-  gridApi.forEachNode((rowNode: IRowNode<T>) => {
-    if (rowNode.data?.id === updatedData.id) {
-      rowNode.setData({ ...rowNode.data, ...updatedData });
-    }
-  });
-};
+import { GridApi } from "ag-grid-community";
+import { updateGridRowData } from "../gridUtils";
 
 const PostComponent: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -30,13 +14,16 @@ const PostComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
-  const handleSavePost = (updatedPost: Post) => {
+  const handleSavePost = (
+    updatedPost: Partial<{ id: number }> & { id: number }
+  ) => {
     if (!updatedPost.id) {
       console.error("Attempting to save a post without an ID:", updatedPost);
       return;
     }
     updateGridRowData(gridApi, updatedPost);
   };
+
   const handleGridReady = (api: GridApi) => {
     setGridApi(api);
   };
@@ -156,13 +143,6 @@ const PostComponent: React.FC = () => {
         gridOptions={productGridOptions}
         onGridReady={handleGridReady}
       />
-      {/* {posts.map((post) => (
-        <PropsActionComponent
-          key={post.id}
-          data={post}
-          onSave={handleSavePost} // Pass this function correctly
-        />
-      ))} */}
     </div>
   );
 };
