@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DataGrid from "../components/DataGrid";
 import { ProductService } from "../services/ProductService";
-import { GridOptionsType, Product } from "../types";
+import { GridOptionsType, Product, ProductUpdated } from "../types";
 import { PropsActionComponent } from "../components/PropsActionComponent";
 import { updateGridRowData } from "../gridUtils";
 import { ProductModal } from "../components/ProductModal";
@@ -30,7 +30,7 @@ const ProductComponent: React.FC = () => {
   const handleUpdateProduct = useCallback(
     async (
       gridApi: GridApi | null,
-      updatedProduct?: Partial<Product> & {
+      updatedProduct?: Partial<ProductUpdated> & {
         productCode: string;
       }
     ) => {
@@ -87,12 +87,12 @@ const ProductComponent: React.FC = () => {
       },
       {
         field: "action",
-        cellRenderer: (params: ICellRendererParams<Product>) => {
+        cellRenderer: (params: ICellRendererParams<ProductUpdated>) => {
           if (!params.data) return null;
           return (
             <PropsActionComponent
               data={params.data}
-              onSave={(updatedData: Product) =>
+              onSave={(updatedData: ProductUpdated) =>
                 handleUpdateProduct(gridApi, updatedData)
               }
             />

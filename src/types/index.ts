@@ -12,7 +12,25 @@ export interface Post {
 }
 
 export interface Product {
-  id: number | undefined;
+  id: number;
+  action?: any;
+  productCode: string;
+  productName: string;
+  productCategory: string;
+  productVendor: string;
+  productDescription: string;
+  productQtyInStock: number;
+  productPrice: number;
+  msrp: number;
+  isAvailable: boolean;
+  createdBy?: string;
+  createdTimestamp?: string;
+  updatedBy?: string;
+  updatedTimestamp?: string;
+}
+
+export interface ProductUpdated {
+  id: undefined | number;
   action?: any;
   productCode: string;
   productName: string;
@@ -70,8 +88,8 @@ export interface PropsModalProps {
 }
 
 export interface PropsActionComponentProps {
-  data: Post | Product | undefined;
-  onSave: (updatedData: Product) => Promise<void>; // onSave is passed from PostComponent
+  data: Post | Product | ProductUpdated | undefined;
+  onSave: (updatedData: ProductUpdated) => Promise<void>; // onSave is passed from PostComponent
 }
 // export type HandleSaveProps = {
 //   gridApi: GridApi | null;
@@ -85,9 +103,14 @@ export interface FieldConfig {
 }
 
 export interface ProductModalProps {
-  rowData: Product;
+  rowData: ProductUpdated;
   onClose: () => void;
   open: boolean;
   onSave: (data: Product) => void;
   mode: "view" | "edit" | "New";
+}
+
+export interface CustomError {
+  type: string;
+  details: string;
 }

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogActions,
@@ -12,13 +13,13 @@ import {
   FormHelperText,
   FormControlLabel,
   Checkbox,
+  CircularProgress,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { Product, ProductModalProps } from "../types";
-import { useEffect } from "react";
 import { ProductService } from "../services/ProductService";
 
-const categoryOptions = ["Electronics", "Smartphone"];
+const categoryOptions = ["electronics", "smartphone"];
 
 export const ProductModal = ({
   rowData,
@@ -47,14 +48,21 @@ export const ProductModal = ({
       isAvailable: false,
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState<string | null>(null);
+
+  const isFieldDisabled = mode === "view";
 
   useEffect(() => {
     if (open) {
       reset(rowData || {});
+      setGeneralError(null); // Clear general error when modal opens
     }
   }, [open, rowData, reset]);
 
   const onSubmit = async (data: Product) => {
+    setIsLoading(true);
+    setGeneralError(null); // Clear previous errors
     try {
       if (mode === "edit") {
         await ProductService.updateProduct(data);
@@ -64,14 +72,20 @@ export const ProductModal = ({
       onSave(data);
       onClose();
     } catch (error: any) {
-      // Handle server validation errors
+      const message =
+        error.details || "An unexpected error occurred. Please try again.";
+
+      // Handle field-specific errors
       if (error.type === "ProductCodeExist") {
-        setError("productCode", { type: "server", message: error.details });
+        setError("productCode", { type: "server", message });
       } else if (error.type === "ProductPriceInValid") {
-        setError("productPrice", { type: "server", message: error.details });
+        setError("productPrice", { type: "server", message });
       } else {
-        console.error("Unexpected error:", error);
+        // Set general error message
+        setGeneralError(message);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,6 +95,9 @@ export const ProductModal = ({
     <Dialog open={open} onClose={onClose} fullWidth>
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
+          {generalError && (
+            <p style={{ color: "red", marginBottom: "1em" }}>{generalError}</p>
+          )}
           <Controller
             name="productCode"
             control={control}
@@ -94,6 +111,7 @@ export const ProductModal = ({
                 margin="normal"
                 error={!!errors.productCode}
                 helperText={errors.productCode?.message}
+                disabled={isFieldDisabled}
               />
             )}
           />
@@ -110,7 +128,7 @@ export const ProductModal = ({
                 margin="normal"
                 error={!!errors.productName}
                 helperText={errors.productName?.message}
-                disabled={mode === "view"}
+                disabled={isFieldDisabled}
               />
             )}
           />
@@ -125,6 +143,7 @@ export const ProductModal = ({
                 fullWidth
                 margin="normal"
                 error={!!errors.productCategory}
+                disabled={isFieldDisabled}
               >
                 <InputLabel>Product Category</InputLabel>
                 <Select {...field} label="Product Category">
@@ -156,7 +175,7 @@ export const ProductModal = ({
                 margin="normal"
                 error={!!errors.productVendor}
                 helperText={errors.productVendor?.message}
-                disabled={mode === "view"}
+                disabled={isFieldDisabled}
               />
             )}
           />
@@ -172,13 +191,17 @@ export const ProductModal = ({
                 margin="normal"
                 error={!!errors.productDescription}
                 helperText={errors.productDescription?.message}
-                disabled={mode === "view"}
+                disabled={isFieldDisabled}
               />
             )}
           />
           <Controller
             name="productQtyInStock"
             control={control}
+            rules={{
+              required: "Product QtyInStock is required.",
+              min: { value: 0, message: "Price must be a positive number." },
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -188,13 +211,17 @@ export const ProductModal = ({
                 margin="normal"
                 error={!!errors.productQtyInStock}
                 helperText={errors.productQtyInStock?.message}
-                disabled={mode === "view"}
+                disabled={isFieldDisabled}
               />
             )}
           />
           <Controller
             name="productPrice"
             control={control}
+            rules={{
+              required: "Product Price is required.",
+              min: { value: 0, message: "Price must be a positive number." },
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -204,13 +231,17 @@ export const ProductModal = ({
                 margin="normal"
                 error={!!errors.productPrice}
                 helperText={errors.productPrice?.message}
-                disabled={mode === "view"}
+                disabled={isFieldDisabled}
               />
             )}
           />
           <Controller
             name="msrp"
             control={control}
+            rules={{
+              required: "Product msrp is required.",
+              min: { value: 0, message: "Price must be a positive number." },
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -220,7 +251,7 @@ export const ProductModal = ({
                 margin="normal"
                 error={!!errors.msrp}
                 helperText={errors.msrp?.message}
-                disabled={mode === "view"}
+                disabled={isFieldDisabled}
               />
             )}
           />
@@ -235,7 +266,7 @@ export const ProductModal = ({
                   <Checkbox
                     {...field}
                     checked={field.value}
-                    disabled={mode === "view"} // Disable if in 'view' mode
+                    disabled={isFieldDisabled}
                   />
                 }
                 label="Is Available"
@@ -248,8 +279,15 @@ export const ProductModal = ({
             Cancel
           </Button>
           {mode !== "view" && (
-            <Button type="submit" color="primary">
-              Save
+            <Button type="submit" color="primary" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <CircularProgress size={20} style={{ marginRight: 8 }} />
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
             </Button>
           )}
         </DialogActions>

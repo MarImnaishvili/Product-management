@@ -9,9 +9,44 @@ const API_BASE_URL = "http://108.17.127.80:8080/";
 
 const log = logger.createLogger();
 
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10000, // 10 seconds
+});
+
+const handleAxiosError = (error: any) => {
+  if (axios.isAxiosError(error) && error.response) {
+    const status = error.response.data?.status;
+    const errorDetails =
+      error.response.data?.errorDetails || "No details provided";
+
+    // Check for server validation errors
+    if (status === "ProductCodeExist") {
+      throw {
+        type: "ProductCodeExist",
+        details: errorDetails, // Server sends validation error details
+      };
+    }
+    if (status === "ProductPriceInValid") {
+      throw {
+        type: "ProductPriceInValid",
+        details: errorDetails, // Server sends validation error details
+      };
+    }
+    log.error("Error adding product:", error.response.data.status);
+  } else {
+    log.error(`Unhandled server status: ${status}`);
+    throw {
+      type: "ServerError",
+      details: `Unhandled error status: ${status}`,
+    };
+  }
+
+  throw error; // Re-throw the error to the caller
+};
 export class ProductService {
   static async getAllProducts(): Promise<Product[]> {
-    const response: AxiosResponse<Product[]> = await axios.get(
+    const response: AxiosResponse<Product[]> = await axiosInstance.get(
       `${API_BASE_URL}products/getAllProducts`
     );
     return response.data;
@@ -41,53 +76,30 @@ export class ProductService {
 
   static async updateProduct(updatedData: Partial<Product>): Promise<Product> {
     try {
-      const response: AxiosResponse<Product> = await axios.put(
+      const response: AxiosResponse<Product> = await axiosInstance.put(
         `${API_BASE_URL}products/updateProductByProductCode`,
         updatedData
       );
       log.info("Product updated successfully:", response.data);
       return response.data;
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        // Log the error response data if it exists
-        log.error("Error updating product:", error.response.data);
-      } else {
-        // Log a generic error message
-        log.error("Unexpected error:", error);
-      }
-      throw error; // Re-throw the error after logging
+      handleAxiosError(error); // This function throws an error, so no further code is needed here
+      throw error; // Explicitly rethrow to satisfy TypeScript
     }
   }
 
   static async addNewProduct(newProduct: Product): Promise<Product> {
     try {
       log.info("Sending request to add product:", newProduct);
-      const response: AxiosResponse<Product> = await axios.post(
+      const response: AxiosResponse<Product> = await axiosInstance.post(
         `${API_BASE_URL}products/addProduct`,
         newProduct
       );
       log.info("Product added successfully:", response.data);
       return response.data;
     } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response) {
-        // Check for server validation errors
-        if (error.response.data.status === "ProductCodeExist") {
-          throw {
-            type: "ProductCodeExist",
-            details: error.response.data.errorDetails, // Server sends validation error details
-          };
-        }
-        if (error.response.data.status === "ProductPriceInValid") {
-          throw {
-            type: "ProductPriceInValid",
-            details: error.response.data.errorDetails, // Server sends validation error details
-          };
-        }
-        log.error("Error adding product:", error.response.data.status);
-      } else {
-        log.error("Unexpected error:", error);
-      }
-      throw error; // Re-throw the error to the caller
+      handleAxiosError(error); // This function throws an error, so no further code is needed here
+      throw error; // Explicitly rethrow to satisfy TypeScript
     }
   }
 }
