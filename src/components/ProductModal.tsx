@@ -18,6 +18,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { Product, ProductModalProps } from "../types";
 import { ProductService } from "../services/ProductService";
+import { useSnackbar } from "notistack";
 
 const categoryOptions = ["electronics", "smartphone"];
 
@@ -52,6 +53,7 @@ export const ProductModal = ({
   const [generalError, setGeneralError] = useState<string | null>(null);
 
   const isFieldDisabled = mode === "view";
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (open) {
@@ -70,6 +72,7 @@ export const ProductModal = ({
         await ProductService.addNewProduct(data);
       }
       onSave(data);
+      enqueueSnackbar("Product saved successfully!", { variant: "success" });
       onClose();
     } catch (error: any) {
       const message =
@@ -84,6 +87,9 @@ export const ProductModal = ({
         // Set general error message
         setGeneralError(message);
       }
+      enqueueSnackbar("Failed to save product. Please try again.", {
+        variant: "error", // Error notification
+      });
     } finally {
       setIsLoading(false);
     }
