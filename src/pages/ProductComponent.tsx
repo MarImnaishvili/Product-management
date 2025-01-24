@@ -6,25 +6,30 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import DataGrid from "../components/DataGrid";
 import { ProductService } from "../services/ProductService";
-import { GridOptionsType, Product, ProductUpdated } from "../types";
+import {
+  GridOptionsType,
+  IcategoryInProduct,
+  Product,
+  ProductUpdated,
+} from "../types";
 import { PropsActionComponent } from "../components/PropsActionComponent";
 import { updateGridRowData } from "../gridUtils";
 import { ProductModal } from "../components/ProductModal";
 
 const ProductComponent: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<{
     message: string;
     httpCode: number;
   } | null>(null);
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
-
+  const [openNewModal, setOpenNewModal] = useState<boolean>(false);
   const location = useLocation();
+
   const productLineFromUrl = location.pathname.split("/")[2];
   const normalizedUrl = productLineFromUrl?.trim().replace(/-/g, " ");
-  const [openNewModal, setOpenNewModal] = useState<boolean>(false);
-  console.log("location", location);
 
   // Handle product updates using PropsActionComponent
   const handleUpdateProduct = useCallback(
@@ -41,29 +46,24 @@ const ProductComponent: React.FC = () => {
 
       try {
         const updatedData = await ProductService.updateProduct(updatedProduct);
-
-        // Update grid locally
         updateGridRowData(gridApi, updatedData);
       } catch (error) {
         console.error("Failed to update product:", error);
       }
     },
-    [] // Add any dependencies here if required, like ProductService or updateGridRowData
+    []
   );
 
-  // Example usage
   const handleAddProduct = async (
     gridApi: GridApi | null,
     newProduct: Product
   ) => {
     try {
       const addedProduct = await ProductService.addNewProduct(newProduct);
-
       if (gridApi) {
         gridApi.applyTransaction({ add: [addedProduct] });
       }
     } catch (error: any) {
-      // Explicitly typing error as `any`
       console.error("Failed to add product:", error);
       setError({
         message: error?.response?.data?.errorDetails || "Error adding product",
@@ -75,7 +75,6 @@ const ProductComponent: React.FC = () => {
 
   const handleGridReady = useCallback((api: GridApi) => setGridApi(api), []);
 
-  // Column definitions
   const columnDefs: ColDef<Product, any>[] = useMemo(
     () => [
       {
@@ -83,7 +82,7 @@ const ProductComponent: React.FC = () => {
         headerName: "ID",
         width: 100,
         suppressMovable: true,
-        valueGetter: (params) => params.data?.id ?? "N/A", // Handle undefined gracefully
+        valueGetter: (params) => params.data?.id ?? "N/A",
       },
       {
         field: "action",
@@ -103,10 +102,14 @@ const ProductComponent: React.FC = () => {
       { field: "productCode" },
       { field: "productName" },
       {
-        field: "productCategory",
-        cellEditor: "agSelectCellEditor",
-        cellEditorParams: {
-          values: ["Smartphone", "Electronics"],
+        field: "productCategories",
+        headerName: "Categories",
+        cellRenderer: (params: ICellRendererParams) => {
+          if (!params.data || !params.data.productCategories) return null;
+          const categoryNames = params.data.productCategories.map(
+            (category: IcategoryInProduct) => category.name
+          );
+          return categoryNames.join(", ");
         },
       },
       { field: "productVendor" },
@@ -120,10 +123,9 @@ const ProductComponent: React.FC = () => {
       { field: "updatedBy" },
       { field: "updatedTimestamp" },
     ],
-    [gridApi, handleUpdateProduct] // Updated to include stable dependencies
+    [gridApi, handleUpdateProduct]
   );
 
-  // Fetch products when the component mounts
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -131,7 +133,6 @@ const ProductComponent: React.FC = () => {
         setProducts(fetchedProducts);
         setLoading(false);
       } catch (error: any) {
-        // Explicitly typing error as `any`
         setError({
           message:
             error?.response?.data?.errorDetails || "Error fetching products",
@@ -144,11 +145,28 @@ const ProductComponent: React.FC = () => {
     fetchProducts();
   }, []);
 
-  // Filter products using ProductService
-  const filteredData = ProductService.getProductsByProductCategory(
-    products,
-    normalizedUrl || ""
-  );
+  // Update filteredData based on products and normalizedUrl
+  useEffect(() => {
+    console.log("Normalized URL:", normalizedUrl);
+
+    let filtered = products;
+
+    if (normalizedUrl) {
+      // If there's a category in the URL, filter products based on the category
+      filtered = products.filter(
+        (product) =>
+          Array.isArray(product.productCategories) &&
+          product.productCategories.some(
+            (category) =>
+              category.name.toLowerCase() === normalizedUrl.toLowerCase()
+          )
+      );
+    }
+
+    // If no category in the URL, show all products
+    console.log("Filtered Data:", filtered);
+    setFilteredData(filtered);
+  }, [products, normalizedUrl]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -158,17 +176,17 @@ const ProductComponent: React.FC = () => {
     filteredData,
     error: error ? error.message : null,
     loading,
-    rowHeight: 45, // Customize row height
-    gridWidth: "100%", // Customize grid width
-    pagination: true, // Enable pagination
-    paginationPageSize: 15, // Custom page size for Products
+    rowHeight: 45,
+    gridWidth: "100%",
+    pagination: true,
+    paginationPageSize: 15,
     defaultColDef: {
       sortable: true,
       filter: true,
-      resizable: true, // Allow resizing columns
+      resizable: true,
     },
-    paginationPageSizeSelector: [15, 30, 60, 120], // Pagination options
-    headerHeight: 40, // Customize header height
+    paginationPageSizeSelector: [15, 30, 60, 120],
+    headerHeight: 40,
   };
 
   return (
@@ -208,7 +226,7 @@ const ProductComponent: React.FC = () => {
             id: undefined,
             productCode: "",
             productName: "",
-            productCategory: "",
+            productCategories: [],
             productVendor: "",
             productDescription: "",
             productQtyInStock: 0,

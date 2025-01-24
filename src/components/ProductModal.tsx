@@ -6,21 +6,16 @@ import {
   DialogContent,
   TextField,
   Button,
-  InputLabel,
-  Select,
-  FormControl,
-  MenuItem,
   FormHelperText,
   FormControlLabel,
   Checkbox,
   CircularProgress,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { Product, ProductModalProps } from "../types";
+import { IcategoryInProduct, Product, ProductModalProps } from "../types";
 import { ProductService } from "../services/ProductService";
 import { useSnackbar } from "notistack";
-
-const categoryOptions = ["electronics", "smartphone"];
+import MultipleSelectCheckmarks from "./CheckProductCategories";
 
 export const ProductModal = ({
   rowData,
@@ -40,7 +35,7 @@ export const ProductModal = ({
       id: undefined,
       productCode: "",
       productName: "",
-      productCategory: "",
+      productCategories: [],
       productVendor: "",
       productDescription: "",
       productQtyInStock: 0,
@@ -51,6 +46,8 @@ export const ProductModal = ({
   });
   const [isLoading, setIsLoading] = useState(false);
   const [generalError, setGeneralError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+  // let categories: string[];
 
   const isFieldDisabled = mode === "view";
   const { enqueueSnackbar } = useSnackbar();
@@ -94,6 +91,32 @@ export const ProductModal = ({
       setIsLoading(false);
     }
   };
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const result: string[] = await ProductService.getAllProductCategories();
+  //       console.log(result);
+  //       // Ensure the categories are unique
+  //       categories = result;
+  //     } catch (error) {
+  //       console.error("Failed to fetch categories:", error);
+  //     }
+  //   };
+
+  //   fetchCategories();
+  // }, []);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const result = await ProductService.getAllProductCategories();
+        setCategories(result);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   if (!open) return null;
 
@@ -141,30 +164,33 @@ export const ProductModal = ({
 
           {/* Dropdown for Product Category */}
           <Controller
-            name="productCategory"
+            name="productCategories"
             control={control}
             rules={{ required: "Product Category is required." }}
             render={({ field }) => (
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={!!errors.productCategory}
-                disabled={isFieldDisabled}
-              >
-                <InputLabel>Product Category</InputLabel>
-                <Select {...field} label="Product Category">
-                  {categoryOptions.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.productCategory && (
-                  <FormHelperText>
-                    {errors.productCategory?.message}
+              <div>
+                <MultipleSelectCheckmarks
+                  value={(field.value as IcategoryInProduct[]).map(
+                    (cat) => cat.name
+                  )}
+                  onChange={(event) => {
+                    // Map the selected category names back to IcategoryInProduct objects if necessary
+                    field.onChange(
+                      event.map((category: string) => ({
+                        id: category,
+                        name: category, // Set the name as the category string
+                      }))
+                    );
+                  }}
+                  isDisabled={isFieldDisabled}
+                  options={categories} // Assuming categories are just strings
+                />
+                {errors.productCategories && (
+                  <FormHelperText error>
+                    {errors.productCategories?.message}
                   </FormHelperText>
                 )}
-              </FormControl>
+              </div>
             )}
           />
 

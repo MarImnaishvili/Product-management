@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse } from "axios";
 import { logger } from "react-native-logs";
-import { Product } from "../types";
+import { IcategoryInProduct, Product } from "../types";
 
 const API_BASE_URL = "http://108.17.127.80:8080/";
 
-//  products/updateProductByProductCode
-
 const log = logger.createLogger();
 
-const axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000, // 10 seconds
-});
+// const axiosInstance = axios.create({
+//   baseURL: API_BASE_URL,
+//   timeout: 1000, // 10 seconds
+// });
 
 const handleAxiosError = (error: any) => {
   if (axios.isAxiosError(error) && error.response) {
@@ -44,12 +42,29 @@ const handleAxiosError = (error: any) => {
 
   throw error; // Re-throw the error to the caller
 };
+
 export class ProductService {
   static async getAllProducts(): Promise<Product[]> {
-    const response: AxiosResponse<Product[]> = await axiosInstance.get(
+    const response: AxiosResponse<Product[]> = await axios.get(
       `${API_BASE_URL}products/getAllProducts`
     );
+    console.log("response.data", response.data);
+
     return response.data;
+  }
+
+  static async getAllProductCategories(): Promise<string[]> {
+    const response: AxiosResponse<IcategoryInProduct[]> = await axios.get(
+      `${API_BASE_URL}product_categories/getAllProductCategories`
+    );
+
+    // Extract unique category names
+    const categories = [
+      ...new Set(response.data.map((category) => category.name)),
+    ];
+
+    console.log(categories); // For debugging
+    return categories;
   }
 
   // Filter products based on productLine
@@ -57,26 +72,20 @@ export class ProductService {
     products: Product[],
     query: string
   ): Product[] {
-    log.info("start fetching products by productCategory...");
-
-    const result = products.filter((product) => {
-      if (query === "") return true;
-      const isProductCategoryMatch =
-        product.productCategory.toLowerCase() === query.toLowerCase();
-
-      return isProductCategoryMatch;
-    });
-    log.info(
-      `products fechted sucessfully with + ${result.length} products.${[
-        ...new Set(result.map((product) => product.productCategory)),
-      ]}`
+    console.log(query);
+    console.log(products);
+    const filteredCategories = products.filter(
+      (product) =>
+        Array.isArray(product.productCategories) &&
+        product.productCategories.some((category) => category.name === query)
     );
-    return result;
+    console.log(products);
+    return filteredCategories;
   }
 
   static async updateProduct(updatedData: Partial<Product>): Promise<Product> {
     try {
-      const response: AxiosResponse<Product> = await axiosInstance.put(
+      const response: AxiosResponse<Product> = await axios.put(
         `${API_BASE_URL}products/updateProductByProductCode`,
         updatedData
       );
@@ -91,7 +100,7 @@ export class ProductService {
   static async addNewProduct(newProduct: Product): Promise<Product> {
     try {
       log.info("Sending request to add product:", newProduct);
-      const response: AxiosResponse<Product> = await axiosInstance.post(
+      const response: AxiosResponse<Product> = await axios.post(
         `${API_BASE_URL}products/addProduct`,
         newProduct
       );

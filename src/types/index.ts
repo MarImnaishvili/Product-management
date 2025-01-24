@@ -16,7 +16,7 @@ export interface Product {
   action?: any;
   productCode: string;
   productName: string;
-  productCategory: string;
+  productCategories: IcategoryInProduct[];
   productVendor: string;
   productDescription: string;
   productQtyInStock: number;
@@ -34,7 +34,7 @@ export interface ProductUpdated {
   action?: any;
   productCode: string;
   productName: string;
-  productCategory: string;
+  productCategories: IcategoryInProduct[];
   productVendor: string;
   productDescription: string;
   productQtyInStock: number;
@@ -46,7 +46,6 @@ export interface ProductUpdated {
   updatedBy?: string;
   updatedTimestamp?: string;
 }
-//export type RowDataType = Post | Product;
 
 // Define GridOptions interface with generics
 export interface GridOptionsType<T> {
@@ -114,3 +113,33 @@ export interface CustomError {
   type: string;
   details: string;
 }
+
+export interface ProductCategories {
+  id: number;
+  name: string;
+  description: boolean;
+  code: string;
+  createdTimestamp: string;
+  createdBy: string;
+  updatedBy: string;
+  updatedTimestamp: string;
+  products: Product[];
+}
+
+export interface IcategoryInProduct {
+  id: number;
+  name: string;
+  description: null | string;
+  code: string;
+  createdTimestamp: string;
+  createdBy: string;
+  updatedBy: string;
+  updatedTimestamp: string;
+}
+
+export type MultipleSelectCheckmarksProps = {
+  value: string[]; // Current selected categories
+  onChange: (selected: string[]) => void;
+  isDisabled?: boolean;
+  options: string[];
+};
