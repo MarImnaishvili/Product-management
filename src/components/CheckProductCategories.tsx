@@ -1,4 +1,4 @@
-import OutlinedInput from "@mui/material/OutlinedInput";
+import { forwardRef } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -6,6 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Checkbox from "@mui/material/Checkbox";
 import { MultipleSelectCheckmarksProps } from "../types";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -18,19 +19,18 @@ const MenuProps = {
   },
 };
 
-export default function MultipleSelectCheckmarks({
-  value,
-  onChange,
-  isDisabled = false,
-  options,
-}: MultipleSelectCheckmarksProps) {
+// Wrap the component with forwardRef to forward refs properly
+const MultipleSelectCheckmarks = forwardRef<
+  HTMLDivElement,
+  MultipleSelectCheckmarksProps
+>(({ value, onChange, isDisabled = false, options }, ref) => {
   const handleChange = (event: SelectChangeEvent<string[]>) => {
     const selected = event.target.value as string[];
     onChange(selected);
   };
 
   return (
-    <FormControl sx={{ m: 0, width: "100%" }} disabled={isDisabled}>
+    <FormControl sx={{ m: 0, width: "100%" }} disabled={isDisabled} ref={ref}>
       <InputLabel>Product Category</InputLabel>
       <Select
         multiple
@@ -49,4 +49,6 @@ export default function MultipleSelectCheckmarks({
       </Select>
     </FormControl>
   );
-}
+});
+
+export default MultipleSelectCheckmarks;

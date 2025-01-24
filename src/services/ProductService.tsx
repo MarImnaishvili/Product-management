@@ -53,18 +53,27 @@ export class ProductService {
     return response.data;
   }
 
-  static async getAllProductCategories(): Promise<string[]> {
-    const response: AxiosResponse<IcategoryInProduct[]> = await axios.get(
-      `${API_BASE_URL}product_categories/getAllProductCategories`
-    );
+  static async getAllProductCategories(): Promise<
+    { id: number; name: string; code: string }[]
+  > {
+    try {
+      const response: AxiosResponse<IcategoryInProduct[]> = await axios.get(
+        `${API_BASE_URL}product_categories/getAllProductCategories`
+      );
 
-    // Extract unique category names
-    const categories = [
-      ...new Set(response.data.map((category) => category.name)),
-    ];
+      // Map the response data to return only id, name, and code
+      const categories = response.data.map((category) => ({
+        id: category.id, // Extract the id
+        name: category.name, // Extract the name
+        code: category.code, // Extract the code
+      }));
 
-    console.log(categories); // For debugging
-    return categories;
+      console.log(categories); // For debugging
+      return categories; // Return the formatted array
+    } catch (error) {
+      console.error("Error fetching product categories:", error);
+      throw new Error("Failed to fetch product categories");
+    }
   }
 
   // Filter products based on productLine
@@ -85,6 +94,7 @@ export class ProductService {
 
   static async updateProduct(updatedData: Partial<Product>): Promise<Product> {
     try {
+      log.info("Sending request to updated product:", updatedData);
       const response: AxiosResponse<Product> = await axios.put(
         `${API_BASE_URL}products/updateProductByProductCode`,
         updatedData

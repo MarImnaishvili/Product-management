@@ -37,10 +37,14 @@ export default function SideMenu() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const result: string[] = await ProductService.getAllProductCategories();
-        console.log(result);
-        // Ensure the categories are unique
-        setAllProductLine(result);
+        // Fetch the categories, which will be an array of { id, name, code }
+        const result = await ProductService.getAllProductCategories();
+
+        // Extract the names from the categories
+        const categoryNames = result.map((category) => category.name);
+
+        console.log(categoryNames); // For debugging
+        setAllProductLine(categoryNames); // Store the names in state
       } catch (error) {
         console.error("Failed to fetch categories:", error);
       }

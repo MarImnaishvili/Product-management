@@ -129,12 +129,7 @@ export interface ProductCategories {
 export interface IcategoryInProduct {
   id: number;
   name: string;
-  description: null | string;
   code: string;
-  createdTimestamp: string;
-  createdBy: string;
-  updatedBy: string;
-  updatedTimestamp: string;
 }
 
 export type MultipleSelectCheckmarksProps = {
@@ -143,3 +138,5 @@ export type MultipleSelectCheckmarksProps = {
   isDisabled?: boolean;
   options: string[];
 };
+
+export type TcategoryObject = IcategoryInProduct[];
