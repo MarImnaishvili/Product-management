@@ -6,7 +6,8 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ProductService } from "../services/ProductService";
 
 const drawerWidth = 200;
 
@@ -25,15 +26,36 @@ export default function SideMenu() {
   const [selectProductLine, setSelectProductLine] = useState<
     string | undefined
   >(undefined);
+  const [allProductLine, setAllProductLine] = useState<string[] | undefined>(
+    undefined
+  );
   const [selectPostLine, setSelectPostLine] = useState<string | undefined>(
     undefined
   );
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Fetch the categories, which will be an array of { id, name, code }
+        const result = await ProductService.getAllProductCategories();
+
+        // Extract the names from the categories
+        const categoryNames = result.map((category) => category.name);
+
+        console.log(categoryNames); // For debugging
+        setAllProductLine(categoryNames); // Store the names in state
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setSelectProductLine(value);
-    // Example: Navigate to the selected product line's page
     navigate(`/products/${value.toLowerCase().replace(/\s+/g, "-")}`);
   };
 
@@ -129,8 +151,11 @@ export default function SideMenu() {
                   }}
                 >
                   <option value="">All Product Line</option>
-                  <option value="Smartphone">Smartphone</option>
-                  <option value="Electronics">Electronics</option>
+                  {allProductLine?.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
                 </select>
               </Box>
             </Typography>

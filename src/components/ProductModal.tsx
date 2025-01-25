@@ -6,21 +6,16 @@ import {
   DialogContent,
   TextField,
   Button,
-  InputLabel,
-  Select,
-  FormControl,
-  MenuItem,
   FormHelperText,
   FormControlLabel,
   Checkbox,
   CircularProgress,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { Product, ProductModalProps } from "../types";
+import { Product, ProductModalProps, TcategoryObject } from "../types";
 import { ProductService } from "../services/ProductService";
 import { useSnackbar } from "notistack";
-
-const categoryOptions = ["electronics", "smartphone"];
+import MultipleSelectCheckmarks from "./CheckProductCategories";
 
 export const ProductModal = ({
   rowData,
@@ -34,13 +29,15 @@ export const ProductModal = ({
     handleSubmit,
     reset,
     setError,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<Product>({
     defaultValues: {
       id: undefined,
       productCode: "",
       productName: "",
-      productCategory: "",
+      productCategories: [],
       productVendor: "",
       productDescription: "",
       productQtyInStock: 0,
@@ -51,27 +48,79 @@ export const ProductModal = ({
   });
   const [isLoading, setIsLoading] = useState(false);
   const [generalError, setGeneralError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<TcategoryObject>([]);
+  const [selectedCategoryNames, setSelectedCategoryNames] = useState<string[]>(
+    []
+  );
 
   const isFieldDisabled = mode === "view";
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    // Fetch categories when modal opens
+    const fetchCategories = async () => {
+      try {
+        const result = await ProductService.getAllProductCategories();
+        setCategories(result);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     if (open) {
-      reset(rowData || {});
+      // Reset the form fields when modal opens
+      reset(rowData || {}); // Reset form with the rowData if available
+
       setGeneralError(null); // Clear general error when modal opens
+
+      if (mode === "New") {
+        // In "new" mode, reset selected categories to an empty array
+        setSelectedCategoryNames([]);
+        setValue("productCategories", []); // Clear productCategories
+      } else if (rowData?.productCategories) {
+        // If rowData exists (edit mode), set the selected categories
+        const selectedNames = rowData.productCategories.map(
+          (category) => category.name
+        );
+        setSelectedCategoryNames(selectedNames);
+        setValue("productCategories", rowData.productCategories); // Set productCategories in form
+      }
     }
-  }, [open, rowData, reset]);
+  }, [open, rowData, reset, mode, setValue]);
 
   const onSubmit = async (data: Product) => {
     setIsLoading(true);
     setGeneralError(null); // Clear previous errors
     try {
+      // Map productCategories to the expected format with id, name, and code
+      const categoriesWithDetails = data.productCategories
+        .map((category) => {
+          const categoryDetail = categories.find(
+            (cat) => cat.name === category.name // Match category by name
+          );
+          return categoryDetail
+            ? {
+                id: categoryDetail.id,
+                name: categoryDetail.name,
+                code: categoryDetail.code,
+              } // Ensure id is '1'
+            : null;
+        })
+        .filter((item) => item !== null); // Remove any null values
+
+      // Update the productCategories field with the mapped data
+      const updatedData = { ...data, productCategories: categoriesWithDetails };
+
       if (mode === "edit") {
-        await ProductService.updateProduct(data);
+        await ProductService.updateProduct(updatedData);
       } else {
-        await ProductService.addNewProduct(data);
+        await ProductService.addNewProduct(updatedData);
       }
-      onSave(data);
+      onSave(updatedData);
       enqueueSnackbar("Product saved successfully!", { variant: "success" });
       onClose();
     } catch (error: any) {
@@ -141,30 +190,48 @@ export const ProductModal = ({
 
           {/* Dropdown for Product Category */}
           <Controller
-            name="productCategory"
+            name="productCategories"
             control={control}
             rules={{ required: "Product Category is required." }}
             render={({ field }) => (
-              <FormControl
-                fullWidth
-                margin="normal"
-                error={!!errors.productCategory}
-                disabled={isFieldDisabled}
-              >
-                <InputLabel>Product Category</InputLabel>
-                <Select {...field} label="Product Category">
-                  {categoryOptions.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.productCategory && (
-                  <FormHelperText>
-                    {errors.productCategory?.message}
+              <div>
+                <MultipleSelectCheckmarks
+                  {...field}
+                  value={selectedCategoryNames} // Value should be an array of category names
+                  onChange={(selectedNames) => {
+                    setSelectedCategoryNames(selectedNames); // Update selected category names
+                    console.log("Setting productCategories:", selectedNames);
+                    setValue(
+                      "productCategories",
+                      selectedNames
+                        .map((name) => {
+                          const category = categories.find(
+                            (cat) => cat.name === name
+                          );
+                          if (category) {
+                            return {
+                              name: category.name,
+                              id: category.id,
+                              code: category.code,
+                            };
+                          }
+                          return null;
+                        })
+                        .filter((item) => item !== null) // Remove null values
+                    );
+                    console.log(
+                      "Updated productCategories:",
+                      getValues("productCategories")
+                    );
+                  }}
+                  options={categories.map((category) => category.name)} // Display category names
+                />
+                {errors.productCategories && (
+                  <FormHelperText error>
+                    {errors.productCategories?.message}
                   </FormHelperText>
                 )}
-              </FormControl>
+              </div>
             )}
           />
 
