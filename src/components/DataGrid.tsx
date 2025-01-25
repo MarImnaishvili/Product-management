@@ -55,7 +55,7 @@ const DataGrid = <T,>({ gridOptions, onGridReady }: DataGridProps<T>) => {
         headerHeight={headerHeight}
         rowHeight={rowHeight}
         defaultColDef={memoizedColDef} // Use memoized default column definition
-        rowSelection="multiple" // Correct usage for multiple row selection
+        //rowSelection="multiple" // Correct usage for multiple row selection
       />
     </div>
   );

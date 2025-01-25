@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { PropsModalProps } from "../types";
 import {
@@ -44,7 +45,7 @@ export const PropsModal: React.FC<PropsModalProps> = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
-    setModalData((prevData) => {
+    setModalData((prevData: any) => {
       if (prevData) {
         return {
           ...prevData,
