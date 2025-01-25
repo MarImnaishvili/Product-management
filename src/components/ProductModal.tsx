@@ -34,16 +34,8 @@ export const ProductModal = ({
     formState: { errors },
   } = useForm<Product>({
     defaultValues: {
-      id: undefined,
-      productCode: "",
-      productName: "",
-      productCategories: [],
-      productVendor: "",
-      productDescription: "",
-      productQtyInStock: 0,
-      productPrice: 0,
-      msrp: 0,
-      isAvailable: false,
+      ...rowData,
+      productCategories: rowData?.productCategories || [],
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -115,11 +107,6 @@ export const ProductModal = ({
       // Update the productCategories field with the mapped data
       const updatedData = { ...data, productCategories: categoriesWithDetails };
 
-      if (mode === "edit") {
-        await ProductService.updateProduct(updatedData);
-      } else {
-        await ProductService.addNewProduct(updatedData);
-      }
       onSave(updatedData);
       enqueueSnackbar("Product saved successfully!", { variant: "success" });
       onClose();
@@ -265,6 +252,7 @@ export const ProductModal = ({
                 error={!!errors.productDescription}
                 helperText={errors.productDescription?.message}
                 disabled={isFieldDisabled}
+                multiline
               />
             )}
           />
@@ -280,6 +268,7 @@ export const ProductModal = ({
                 {...field}
                 label="Quantity in Stock"
                 variant="outlined"
+                type="number"
                 fullWidth
                 margin="normal"
                 error={!!errors.productQtyInStock}
@@ -300,6 +289,7 @@ export const ProductModal = ({
                 {...field}
                 label="Product Price"
                 variant="outlined"
+                type="number"
                 fullWidth
                 margin="normal"
                 error={!!errors.productPrice}
@@ -320,6 +310,7 @@ export const ProductModal = ({
                 {...field}
                 label="MSRP"
                 variant="outlined"
+                type="number"
                 fullWidth
                 margin="normal"
                 error={!!errors.msrp}
@@ -339,6 +330,7 @@ export const ProductModal = ({
                   <Checkbox
                     {...field}
                     checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
                     disabled={isFieldDisabled}
                   />
                 }
