@@ -140,3 +140,20 @@ export type MultipleSelectCheckmarksProps = {
 };
 
 export type TcategoryObject = IcategoryInProduct[];
+
+export type TLineChart = {
+  title: {
+    text: string;
+  };
+  data: {
+    quarter: string;
+    petrol: number;
+    diesel: number;
+  }[];
+  series: {
+    type: string;
+    xKey: string;
+    yKey: string;
+    yName: string;
+  }[];
+};

@@ -8,6 +8,9 @@ import Typography from "@mui/material/Typography";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ProductService } from "../services/ProductService";
+import HomeIcon from "@mui/icons-material/Home";
+import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const drawerWidth = 200;
 
@@ -29,9 +32,10 @@ export default function SideMenu() {
   const [allProductLine, setAllProductLine] = useState<string[] | undefined>(
     undefined
   );
-  const [selectPostLine, setSelectPostLine] = useState<string | undefined>(
-    undefined
-  );
+  const [showDashboards, setShowDashboards] = useState(false);
+  // const [selectPostLine, setSelectPostLine] = useState<string | undefined>(
+  //   undefined
+  // );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,11 +63,11 @@ export default function SideMenu() {
     navigate(`/products/${value.toLowerCase().replace(/\s+/g, "-")}`);
   };
 
-  const handleSelectChangePost = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setSelectPostLine(value);
-    navigate(`/posts/${value.toLowerCase().replace(/\s+/g, "-")}`);
-  };
+  // const handleSelectChangePost = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const value = e.target.value;
+  //   setSelectPostLine(value);
+  //   navigate(`/posts/${value.toLowerCase().replace(/\s+/g, "-")}`);
+  // };
 
   return (
     <Drawer
@@ -119,7 +123,10 @@ export default function SideMenu() {
                   color: "black",
                 }}
               >
-                Home
+                <Box display="flex" alignItems="center">
+                  <HomeIcon style={{ marginRight: 8 }} />
+                  Home
+                </Box>
               </Link>
             </Typography>
           </div>
@@ -134,7 +141,10 @@ export default function SideMenu() {
                   color: "black",
                 }}
               >
-                Products
+                <Box display="flex" alignItems="center">
+                  <QrCodeScannerIcon style={{ marginRight: 8 }} />
+                  Products
+                </Box>
               </Link>
               <Box>
                 <select
@@ -160,7 +170,7 @@ export default function SideMenu() {
               </Box>
             </Typography>
           </div>
-          <div>
+          {/* <div>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               <Link
                 to={"/posts"}
@@ -192,6 +202,50 @@ export default function SideMenu() {
                   <option value="archived">Archived</option>
                 </select>
               </Box>
+            </Typography>
+          </div> */}
+          <div>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              <Link
+                to={"/dashboards"}
+                style={{
+                  textDecoration: "none",
+                  padding: "4px 8px 4px 0",
+                  fontSize: "14px",
+                  color: "black",
+                }}
+              >
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  sx={{ marginTop: "25px" }}
+                  onClick={() =>
+                    setShowDashboards((curposition) => !curposition)
+                  }
+                >
+                  <DashboardIcon style={{ marginRight: 8 }} />
+                  Dashboard
+                </Box>
+              </Link>
+              {showDashboards && (
+                <Link
+                  to={"/dashboards/products"}
+                  style={{
+                    textDecoration: "none",
+                    padding: "4px 8px 4px 0",
+                    fontSize: "14px",
+                    color: "black",
+                  }}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    sx={{ marginLeft: "20px" }}
+                  >
+                    Products
+                  </Box>
+                </Link>
+              )}
             </Typography>
           </div>
         </Box>
