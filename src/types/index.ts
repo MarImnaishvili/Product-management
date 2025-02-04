@@ -151,18 +151,19 @@ export type TLineChart = {
     period: string;
     quantity: number;
   }[];
-  series: {
-    type: string;
-    xKey: string;
-    yKey: string;
-    yName: string;
-  }[];
+  series:
+    | {
+        type: string;
+        xKey: string;
+        yKey: string;
+        yName: string;
+      }[];
 };
 
 export type TProductChart = {
-  title: string;
-  xKeyName: string;
-  yKeyName: string;
+  title?: string;
+  xKeyName?: string;
+  yKeyName?: string;
   data: {
     period: string;
     quantity: number;

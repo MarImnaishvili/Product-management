@@ -2,12 +2,14 @@
 import axios, { AxiosResponse } from "axios";
 import { TProductChart } from "../types";
 
-const API_BASE_URL = "http://localhost:8000/ProductDataForChart";
+// const API_BASE_URL_JSON_SERVER = "http://localhost:8000/ProductDataForChart";
+const API_BASE_URL =
+  "http://108.17.127.80:8080/productDashboard/getSmallChartDetailsForAddedProducts";
 
 export class ChartService {
-  static async getProductQuantityChart(): Promise<TProductChart[]> {
+  static async getProductQuantityChart(): Promise<TProductChart> {
     try {
-      const response: AxiosResponse<TProductChart[]> = await axios.get(
+      const response: AxiosResponse<TProductChart> = await axios.get(
         `${API_BASE_URL}`
       );
       console.log(response.data); // For debugging purposes

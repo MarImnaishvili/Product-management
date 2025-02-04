@@ -7,7 +7,7 @@ import { ChartService } from "../services/ChartService";
 import { TProductChart } from "../types";
 
 export const Dashboards = () => {
-  const [fetchedArray, setFetchedArray] = useState<TProductChart[] | null>(
+  const [fetchedObject, setFetchedObject] = useState<TProductChart | null>(
     null
   );
   const [loading, setLoading] = useState<boolean>(true);
@@ -19,9 +19,10 @@ export const Dashboards = () => {
   useEffect(() => {
     const fetchProductChartData = async () => {
       try {
-        const fetchedProductChartData: TProductChart[] =
+        const fetchedProductChartData: TProductChart =
           await ChartService.getProductQuantityChart();
-        setFetchedArray(fetchedProductChartData);
+        console.log(fetchedProductChartData);
+        setFetchedObject(fetchedProductChartData);
       } catch (error: any) {
         setError({
           message:
@@ -46,9 +47,9 @@ export const Dashboards = () => {
       </Typography>
     );
   }
-  function capitalizeFirstLetter(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
+  // function capitalizeFirstLetter(str: string) {
+  //   return str.charAt(0).toUpperCase() + str.slice(1);
+  // }
 
   return (
     <>
@@ -64,16 +65,13 @@ export const Dashboards = () => {
           flexDirection: "row",
         }}
       >
-        {fetchedArray?.map((fetchedObject, index) => (
-          <LineChart
-            key={index} // If no unique ID is available, use the index as a fallback (not ideal for reordering)
-            title={fetchedObject.title}
-            data={fetchedObject.data}
-            xKeyName={fetchedObject.xKeyName}
-            yKeyName={fetchedObject.yKeyName}
-            YName={capitalizeFirstLetter(fetchedObject.yKeyName)}
-          />
-        ))}
+        <LineChart
+          title={fetchedObject?.title ?? "Default Title"}
+          data={fetchedObject?.data ?? [{ period: "N/A", quantity: 0 }]}
+          xKeyName={fetchedObject?.xKeyName ?? "period"}
+          yKeyName={fetchedObject?.yKeyName ?? "quantity"}
+          YName={fetchedObject?.yKeyName ?? "Quantity"}
+        />
       </Box>
     </>
   );

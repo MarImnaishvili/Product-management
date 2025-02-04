@@ -13,7 +13,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   const [options, setOptions] = useState<TLineChart | null>(null);
 
   useEffect(() => {
-    if (title) {
+    if (title && data) {
       setOptions({
         title: {
           text: title || "Default Title",
