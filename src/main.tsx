@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import ProductComponent from "./pages/ProductComponent";
 //import PostComponent from "./pages/PostComponent";
 import HomeGrid from "./pages/HomeGrid";
+import { Dashboards } from "./components/Dashboards";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,15 @@ const router = createBrowserRouter([
         path: "/products/:productCategory",
         element: <ProductComponent />,
       },
+      {
+        path: "/dashboards",
+        element: <Dashboards />,
+      },
+      {
+        path: "/dashboards/:products",
+        element: <Dashboards />,
+      },
+
       // {
       //   path: "/posts",
       //   element: <PostComponent />,

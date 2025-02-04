@@ -140,3 +140,43 @@ export type MultipleSelectCheckmarksProps = {
 };
 
 export type TcategoryObject = IcategoryInProduct[];
+
+//Charts
+
+export type TLineChart = {
+  title: {
+    text: string;
+  };
+  data: {
+    period: string;
+    quantity: number;
+  }[];
+  series:
+    | {
+        type: string;
+        xKey: string;
+        yKey: string;
+        yName: string;
+      }[];
+};
+
+export type TProductChart = {
+  title?: string;
+  xKeyName?: string;
+  yKeyName?: string;
+  data: {
+    period: string;
+    quantity: number;
+  }[];
+};
+
+export interface LineChartProps {
+  title: string;
+  data: {
+    period: string;
+    quantity: number;
+  }[];
+  xKeyName: string;
+  yKeyName: string;
+  YName: string;
+}
