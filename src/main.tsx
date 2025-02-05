@@ -4,8 +4,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Layout from "./components/Layout";
 import ProductComponent from "./pages/ProductComponent";
-import PostComponent from "./pages/PostComponent";
+//import PostComponent from "./pages/PostComponent";
 import HomeGrid from "./pages/HomeGrid";
+import { Dashboards } from "./components/Dashboards";
 
 const router = createBrowserRouter([
   {
@@ -25,13 +26,22 @@ const router = createBrowserRouter([
         element: <ProductComponent />,
       },
       {
-        path: "/posts",
-        element: <PostComponent />,
+        path: "/dashboards",
+        element: <Dashboards />,
       },
       {
-        path: "/posts/:postsStat",
-        element: <PostComponent />,
+        path: "/dashboards/:products",
+        element: <Dashboards />,
       },
+
+      // {
+      //   path: "/posts",
+      //   element: <PostComponent />,
+      // },
+      // {
+      //   path: "/posts/:postsStat",
+      //   element: <PostComponent />,
+      // },
     ],
   },
 ]);
