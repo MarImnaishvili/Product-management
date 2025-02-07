@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Box from "@mui/material/Box";
-import { LineChart } from "./LineChart";
+import { SmallLineChart } from "./SmallLineChart";
+import { LargeLineChart } from "./LargeLineChart";
 import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ChartService } from "../services/ChartService";
-import { TProductChart } from "../types";
+import { ChartService } from "../../services/ChartService";
+import { TProductChart } from "../../types";
 
 export const Dashboards = () => {
   const [fetchedObject, setFetchedObject] = useState<TProductChart | null>(
@@ -60,12 +61,58 @@ export const Dashboards = () => {
         sx={{
           width: "100%",
           height: "100%",
+          display: "grid",
+          gap: "20px",
+          gridTemplateColumns: "repeat(2, 1fr)",
+        }}
+      >
+        <SmallLineChart
+          title={fetchedObject?.title ?? "Default Title"}
+          data={fetchedObject?.data ?? [{ period: "N/A", quantity: 0 }]}
+          xKeyName={fetchedObject?.xKeyName ?? "period"}
+          yKeyName={fetchedObject?.yKeyName ?? "quantity"}
+          YName={fetchedObject?.yKeyName ?? "Quantity"}
+          color="#A8E6CF"
+          markerColor="#A8E6CF"
+        />
+        <SmallLineChart
+          title={fetchedObject?.title ?? "Default Title"}
+          data={fetchedObject?.data ?? [{ period: "N/A", quantity: 0 }]}
+          xKeyName={fetchedObject?.xKeyName ?? "period"}
+          yKeyName={fetchedObject?.yKeyName ?? "quantity"}
+          YName={fetchedObject?.yKeyName ?? "Quantity"}
+          color="#FFD3B6"
+          markerColor="#FFD3B6"
+        />
+        <SmallLineChart
+          title={fetchedObject?.title ?? "Default Title"}
+          data={fetchedObject?.data ?? [{ period: "N/A", quantity: 0 }]}
+          xKeyName={fetchedObject?.xKeyName ?? "period"}
+          yKeyName={fetchedObject?.yKeyName ?? "quantity"}
+          YName={fetchedObject?.yKeyName ?? "Quantity"}
+          color="#AEC6CF"
+          markerColor="#AEC6CF"
+        />
+        <SmallLineChart
+          title={fetchedObject?.title ?? "Default Title"}
+          data={fetchedObject?.data ?? [{ period: "N/A", quantity: 0 }]}
+          xKeyName={fetchedObject?.xKeyName ?? "period"}
+          yKeyName={fetchedObject?.yKeyName ?? "quantity"}
+          YName={fetchedObject?.yKeyName ?? "Quantity"}
+          color="#BDBDBD"
+          markerColor="#BDBDBD"
+        />
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
           display: "flex",
           gap: "20px",
           flexDirection: "row",
         }}
       >
-        <LineChart
+        <LargeLineChart
           title={fetchedObject?.title ?? "Default Title"}
           data={fetchedObject?.data ?? [{ period: "N/A", quantity: 0 }]}
           xKeyName={fetchedObject?.xKeyName ?? "period"}
