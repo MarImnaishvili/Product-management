@@ -146,6 +146,9 @@ export type TcategoryObject = IcategoryInProduct[];
 export type TLineChart = {
   title: {
     text: string;
+    fontSize?: number;
+    fontWeight?: string;
+    color?: string;
   };
   data: {
     period: string;
@@ -188,3 +191,8 @@ export interface LineChartProps {
   yKeyName: string;
   YName: string;
 }
+
+export type TPieChartData = {
+  asset: string;
+  amount: number;
+}[];

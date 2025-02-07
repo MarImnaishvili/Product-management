@@ -6,6 +6,7 @@ import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ChartService } from "../../services/ChartService";
 import { TProductChart } from "../../types";
+import { PieChart } from "./PieChart";
 
 export const Dashboards = () => {
   const [fetchedObject, setFetchedObject] = useState<TProductChart | null>(
@@ -107,9 +108,6 @@ export const Dashboards = () => {
         sx={{
           width: "100%",
           height: "100%",
-          display: "flex",
-          gap: "20px",
-          flexDirection: "row",
         }}
       >
         <LargeLineChart
@@ -119,6 +117,15 @@ export const Dashboards = () => {
           yKeyName={fetchedObject?.yKeyName ?? "quantity"}
           YName={fetchedObject?.yKeyName ?? "Quantity"}
         />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <PieChart />
       </Box>
     </>
   );

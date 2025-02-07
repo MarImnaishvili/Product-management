@@ -16,6 +16,7 @@
     "@mui/icons-material": "^6.1.5",
     "@mui/material": "^6.1.5",
     "@mui/x-date-pickers": "^7.22.0",
+    "ag-charts-community": "^11.0.4",
     "ag-charts-react": "^11.0.4",
     "ag-grid-community": "^32.3.3",
     "ag-grid-react": "^32.3.3",

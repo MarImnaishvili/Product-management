@@ -21,18 +21,21 @@ export default function Layout() {
             spacing={2}
             sx={{
               alignItems: "center",
-              mx: 3,
-              pb: 5,
-              mt: { xs: 8, md: 0 },
+              //mx: 3, // Sets horizontal margin (margin-left & margin-right) to 3 (MUI spacing unit)
+              p: 5, // Sets bottom padding to 5 (MUI spacing unit)
+              mt: { xs: 8, md: 0 }, // Sets top margin dynamically for different screen sizes
+              backgroundColor: "#ebf3f3",
             }}
           >
             <Header />
+
             {/* Button to toggle theme */}
             {/* <IconButton onClick={toggleTheme} color="inherit">
               {themeMode === "light" ? <Brightness4 /> : <Brightness7 />}
             </IconButton> */}
 
             <Outlet />
+
             <Footer />
           </Stack>
         </Box>
