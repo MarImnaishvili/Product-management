@@ -17,6 +17,9 @@ export const LargeLineChart: React.FC<LineChartProps> = ({
       setOptions({
         title: {
           text: title || "Default Title",
+          fontSize: 18,
+          fontWeight: "bold",
+          color: "#333",
         },
         data: data || [],
         series: [
@@ -36,6 +39,9 @@ export const LargeLineChart: React.FC<LineChartProps> = ({
       style={{
         width: "100%",
         height: "100%",
+        borderRadius: "10px",
+        overflow: "hidden", // Clips the overflowing chart to match border radius
+        backgroundColor: "white",
       }}
     >
       <AgCharts options={options as AgChartOptions} />

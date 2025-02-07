@@ -21,6 +21,9 @@ export const SmallLineChart: React.FC<
       setOptions({
         title: {
           text: title || "Default Title",
+          fontSize: 14, // Adjust size if needed
+          fontWeight: "bold", // 🔥 Bold title
+          color: "#333", // Optional: Darker text for better visibility
         },
         data: data || [],
         series: [
@@ -48,6 +51,9 @@ export const SmallLineChart: React.FC<
       style={{
         width: "100%",
         height: "100%",
+        borderRadius: "10px",
+        overflow: "hidden", // Clips the overflowing chart to match border radius
+        backgroundColor: "white", // Helps visualize the rounded corners
       }}
     >
       <AgCharts options={options as AgChartOptions} />
