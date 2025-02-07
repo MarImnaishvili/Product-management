@@ -157,6 +157,14 @@ export type TLineChart = {
         xKey: string;
         yKey: string;
         yName: string;
+        stroke?: string;
+        strokeWidth?: number;
+        marker?: {
+          size: number;
+          fill: string;
+          stroke: string;
+          strokeWidth: number;
+        };
       }[];
 };
 

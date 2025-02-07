@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { AgCharts } from "ag-charts-react";
-import { LineChartProps, TLineChart } from "../types";
+import { LineChartProps, TLineChart } from "../../types";
 import { AgChartOptions } from "ag-charts-community";
 
-export const LineChart: React.FC<LineChartProps> = ({
+export const SmallLineChart: React.FC<
+  LineChartProps & { color?: string; markerColor?: string }
+> = ({
   title,
   data,
   xKeyName,
   yKeyName,
   YName,
+  color = "#AEC6CF",
+  markerColor = "#AEC6CF",
 }) => {
   const [options, setOptions] = useState<TLineChart | null>(null);
 
@@ -25,11 +29,19 @@ export const LineChart: React.FC<LineChartProps> = ({
             xKey: xKeyName || "defaultXKey",
             yKey: yKeyName || "defaultYKey",
             yName: YName || "defaultYName",
+            stroke: color,
+            strokeWidth: 2,
+            marker: {
+              size: 3, // Adjust the spot size
+              fill: markerColor, // Spot (marker) color
+              stroke: color, // Outline of the spot
+              strokeWidth: 2,
+            },
           },
         ],
       });
     }
-  }, [title, data, xKeyName, yKeyName, YName]);
+  }, [title, data, xKeyName, yKeyName, YName, color, markerColor]);
 
   return (
     <div

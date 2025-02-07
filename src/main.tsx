@@ -6,7 +6,7 @@ import Layout from "./components/Layout";
 import ProductComponent from "./pages/ProductComponent";
 //import PostComponent from "./pages/PostComponent";
 import HomeGrid from "./pages/HomeGrid";
-import { Dashboards } from "./components/Dashboards";
+import { Dashboards } from "./components/dashboards/Dashboards";
 
 const router = createBrowserRouter([
   {
